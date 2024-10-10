@@ -23,13 +23,13 @@ declare module "next-auth" {
 async function linkAccount(user: User, account: Account) {
   // Check if there's an existing account with the same email
   const existingUser = await prismaClient.user.findUnique({
-    where: { email: user.email },
+    where: { email: user.email as string },
     include: { accounts: true },
   })
 
   if (existingUser) {
     // If the user exists but doesn't have this provider linked
-    if (!existingUser.accounts.some((acc: Account) => acc.provider === account.provider)) {
+    if (!existingUser.accounts.some((acc) => acc.provider === account.provider)) {
       await prismaClient.account.create({
         data: {
           userId: existingUser.id,
