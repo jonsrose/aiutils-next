@@ -75,7 +75,10 @@ async function linkAccount(user: User, account: Account) {
   return true
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const nextAuthSecret = process.env.NEXTAUTH_SECRET;
+console.log('nextAuthSecret', nextAuthSecret);
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prismaClient),
@@ -101,7 +104,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: nextAuthSecret,
   callbacks: {
     async signIn({ user, account }) {
       // Custom sign-in logic here

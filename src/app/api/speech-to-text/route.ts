@@ -1,15 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import OpenAI from 'openai';
 import { getUserOpenAIApiKey } from '@/utils/userUtils';
+import { prisma } from '@/lib/prisma';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
+  console.log("Attempting to get server session...");
   const session = await getServerSession(authOptions);
+  console.log("Session result:", JSON.stringify(session, null, 2));
 
-  if (!session) {
+  if (!session || !session.user || !session.user.email) {
     return new NextResponse('Unauthorized', { status: 401 });
   }
+
+  const email = session.user.email;
+
+  console.log("Email:", email);
 
   try {
     const formData = await request.formData();
@@ -19,13 +26,14 @@ export async function POST(request: NextRequest) {
       return new NextResponse('No audio file provided', { status: 400 });
     }
 
-    const session = await getServerSession();
-  
-    if (!session || !session.user?.email) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
+    const user = await prisma.user.findUnique({
+      where: { email: email },
+      select: { openaiApiKey: true }
+    });
 
-    const userApiKey = await getUserOpenAIApiKey(session.user.email);
+    console.log("User:", user);
+  
+    const userApiKey = user?.openaiApiKey || null;
 
     if (!userApiKey) {
       return new NextResponse('OpenAI API key not found', { status: 400 });
