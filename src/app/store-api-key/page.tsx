@@ -2,12 +2,14 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { withAuth } from '@/components/withAuth';
 
 const StoreApiKey = () => {
   const [newApiKey, setNewApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
 
   const handleStoreApiKey = async (e: React.FormEvent) => {
+    console.log('Storing API key:', newApiKey);
     e.preventDefault();
     try {
       const response = await fetch('/api/store-api-key', {
@@ -16,6 +18,7 @@ const StoreApiKey = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ apiKey: newApiKey }),
+        credentials: 'include', // Add this line
       });
 
       if (response.ok) {
@@ -25,7 +28,7 @@ const StoreApiKey = () => {
         throw new Error('Failed to store API key');
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error details:', error);
       alert('Error storing API key');
     }
   };
@@ -73,4 +76,4 @@ const StoreApiKey = () => {
   );
 };
 
-export default StoreApiKey;
+export default withAuth(StoreApiKey);

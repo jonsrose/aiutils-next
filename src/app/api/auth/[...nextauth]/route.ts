@@ -101,6 +101,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET, // Add this line
   callbacks: {
     async signIn({ user, account }) {
       // Custom sign-in logic here
