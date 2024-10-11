@@ -4,6 +4,8 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import OpenAI from 'openai';
 import prisma from '@/lib/prisma';
 import { decrypt } from '@/utils/cryptoUtils'; // Import your decryption function
+import { readFileSync } from 'fs';
+import { File } from 'buffer';
 
 export async function POST(request: Request) {
   console.log("Attempting to get server session...");
@@ -20,7 +22,14 @@ export async function POST(request: Request) {
 
   try {
     const formData = await request.formData();
-    const audio = formData.get('audio') as File;
+    const audioFile = formData.get('audio');
+
+    if (!(audioFile instanceof File)) {
+      // Handle the case where audioFile is not a File
+      throw new Error('No audio file provided');
+    }
+
+    const audio = audioFile;
 
     if (!audio) {
       return new NextResponse('No audio file provided', { status: 400 });
@@ -48,11 +57,16 @@ export async function POST(request: Request) {
 
     const openai = new OpenAI({ apiKey: decryptedApiKey });
 
-    const file = new File([await audio.arrayBuffer()], 'audio.webm', { type: 'audio/webm' });
+    // Convert the audio to a Buffer
+    const buffer = Buffer.from(await audio.arrayBuffer());
+
+    // Use the actual type of the uploaded file
+    const file = new File([buffer], audio.name, { type: audio.type });
 
     const transcription = await openai.audio.transcriptions.create({
-      file,
-      model: 'whisper-1'
+      file: file,
+      model: 'whisper-1',
+      response_format: 'json'
     });
 
     return NextResponse.json({ transcription: transcription.text });
