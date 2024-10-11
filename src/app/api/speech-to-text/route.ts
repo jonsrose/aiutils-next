@@ -2,15 +2,15 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import OpenAI from 'openai';
-import { getUserOpenAIApiKey } from '@/utils/userUtils';
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
+import { decrypt } from '@/utils/cryptoUtils'; // Import your decryption function
 
 export async function POST(request: Request) {
   console.log("Attempting to get server session...");
   const session = await getServerSession(authOptions);
   console.log("Session result:", JSON.stringify(session, null, 2));
 
-  if (!session || !session.user || !session.user.email) {
+  if (!session?.user?.email) {
     return new NextResponse('Unauthorized', { status: 401 });
   }
 
@@ -33,13 +33,20 @@ export async function POST(request: Request) {
 
     console.log("User:", user);
   
-    const userApiKey = user?.openaiApiKey || null;
+    const encryptedApiKey = user?.openaiApiKey || null;
 
-    if (!userApiKey) {
+    if (!encryptedApiKey) {
       return new NextResponse('OpenAI API key not found', { status: 400 });
     }
 
-    const openai = new OpenAI({ apiKey: userApiKey });
+    // Decrypt the API key
+    const decryptedApiKey = decrypt(encryptedApiKey);
+
+    if (!decryptedApiKey) {
+      return new NextResponse('Failed to decrypt API key', { status: 500 });
+    }
+
+    const openai = new OpenAI({ apiKey: decryptedApiKey });
 
     const file = new File([await audio.arrayBuffer()], 'audio.webm', { type: 'audio/webm' });
 
