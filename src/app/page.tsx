@@ -35,6 +35,14 @@ function Home() {
               Store API Key
             </Link>
           </li>
+          <li>
+            <Link 
+              href="/speech-to-text" 
+              className="text-blue-500 hover:text-blue-700 underline"
+            >
+              Speech to Text
+            </Link>
+          </li>
         </ul>
       </nav>
     </main>
