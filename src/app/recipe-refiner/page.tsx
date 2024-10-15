@@ -5,11 +5,13 @@
 import React, { useState, useRef } from 'react';
 import { RefineRecipeResponse } from '../../types';
 import Link from 'next/link';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 const RecipeRefinerPage = () => {
   const [recipe, setRecipe] = useState('');
   const [model, setModel] = useState('gpt-3.5-turbo');
-  const [readyTime, setReadyTime] = useState('');
+  const [readyTime, setReadyTime] = useState<Date | null>(null);
   const [refinedRecipeText, setRefinedRecipeText] = useState('');
   const [refinedRecipe, setRefinedRecipe] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +34,7 @@ const RecipeRefinerPage = () => {
         body: JSON.stringify({
           recipe,
           model,
-          readyTime: readyTime || null,
+          readyTime: readyTime ? readyTime.toTimeString().slice(0, 5) : null,
         }),
       });
 
@@ -96,16 +98,18 @@ const RecipeRefinerPage = () => {
         </div>
         <div>
           <label htmlFor="readyTime" className="block text-sm font-medium text-gray-700">
-            Ready Time (Optional, in minutes):
+            Ready Time (Optional):
           </label>
-          <input
-            type="number"
+          <DatePicker
             id="readyTime"
-            value={readyTime}
-            onChange={(e) => setReadyTime(e.target.value)}
+            selected={readyTime}
+            onChange={(date: Date | null) => setReadyTime(date)}
+            showTimeSelect
+            showTimeSelectOnly
+            timeIntervals={15}
+            timeCaption="Time"
+            dateFormat="h:mm aa"
             className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-            placeholder="e.g., 30"
-            min="1"
           />
         </div>
         <div>
@@ -119,7 +123,7 @@ const RecipeRefinerPage = () => {
         </div>
       </form>
 
-      {isLoading && <Loading />}
+      {/* TODO {isLoading && <Loading />} */}
 
       {refinedRecipeText && (
         <div className="mt-6">
