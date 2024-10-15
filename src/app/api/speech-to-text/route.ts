@@ -4,7 +4,6 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import OpenAI from 'openai';
 import prisma from '@/lib/prisma';
 import { decrypt } from '@/utils/cryptoUtils'; // Import your decryption function
-import { readFileSync } from 'fs';
 import { File } from 'buffer';
 
 export async function POST(request: Request) {

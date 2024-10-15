@@ -78,7 +78,6 @@ async function linkAccount(user: User, account: Account) {
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const nextAuthSecret = process.env.NEXTAUTH_SECRET;
-console.log('nextAuthSecret', nextAuthSecret);
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prismaClient),

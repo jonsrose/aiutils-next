@@ -43,6 +43,14 @@ function Home() {
               Speech to Text
             </Link>
           </li>
+          <li>
+            <Link 
+              href="/recipe-refiner" 
+              className="text-blue-500 hover:text-blue-700 underline"
+            >
+              Recipe Refiner
+            </Link>
+          </li>
         </ul>
       </nav>
     </main>
