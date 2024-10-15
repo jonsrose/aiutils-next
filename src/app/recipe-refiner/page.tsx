@@ -47,7 +47,7 @@ const RecipeRefinerPage = () => {
       setRefinedRecipe(data.jsonOutput);
       setRefinedRecipeText(data.textOutput);
       setWordCount(data.textOutput.split(/\s+/).length);
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       console.error('Failed to refine the recipe. Please try again.');
     } finally {

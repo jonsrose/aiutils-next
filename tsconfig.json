@@ -19,7 +19,10 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "sourceMap": true,
+    "types": ["next", "next/image-types/global"],
+    "typeRoots": ["./node_modules/@types", "./node_modules/next-auth"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

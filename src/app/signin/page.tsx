@@ -2,9 +2,10 @@
 
 import { signIn, getProviders } from "next-auth/react"
 import { useEffect, useState, FormEvent } from "react"
+import { ClientSafeProvider } from "next-auth/react"
 
 export default function SignIn() {
-  const [providers, setProviders] = useState<any>(null)
+  const [providers, setProviders] = useState<Record<string, ClientSafeProvider> | null>(null)
   const [email, setEmail] = useState('')
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function SignIn() {
 
   return (
     <div>
-      {Object.values(providers).map((provider: any) => (
+      {Object.values(providers).map((provider: ClientSafeProvider) => (
         <div key={provider.name}>
           {provider.id === 'email' ? (
             <form onSubmit={handleEmailSignIn}>

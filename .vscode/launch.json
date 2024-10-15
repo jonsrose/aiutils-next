@@ -4,16 +4,12 @@
     {
       "type": "node",
       "request": "attach",
-      "name": "Next.js: Debug Server-Side",
+      "name": "Debug Next.js API",
       "skipFiles": ["<node_internals>/**"],
-      "port": 9229
-    },
-    {
-      "type": "chrome",
-      "request": "launch",
-      "name": "Next.js: Debug Client-Side",
-      "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}"
+      "port": 9229,
+      "sourceMaps": true,
+      "outFiles": [".next/**/*.js"]
     }
   ]
 }
+
