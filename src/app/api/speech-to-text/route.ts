@@ -38,8 +38,6 @@ export async function POST(request: Request) {
       where: { email: email },
       select: { openaiApiKey: true }
     });
-
-    console.log("User:", user);
   
     const encryptedApiKey = user?.openaiApiKey || null;
 
