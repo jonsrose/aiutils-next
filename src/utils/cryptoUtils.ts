@@ -1,3 +1,4 @@
+import prisma from '@/lib/prisma';
 import crypto from 'crypto';
 
 // In a real application, this should be a secure, randomly generated key stored in environment variables
@@ -20,4 +21,15 @@ export function decrypt(text: string): string {
   let decrypted = decipher.update(encryptedText);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
+}
+
+export async function getDecryptedApiKey(email: string): Promise<string | null> {
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { openaiApiKey: true }
+  });
+
+  if (!user?.openaiApiKey) return null;
+
+  return decrypt(user.openaiApiKey);
 }

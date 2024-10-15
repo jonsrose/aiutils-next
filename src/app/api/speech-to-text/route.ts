@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import OpenAI from 'openai';
-import prisma from '@/lib/prisma';
-import { decrypt } from '@/utils/cryptoUtils'; // Import your decryption function
+import { getDecryptedApiKey } from '@/utils/cryptoUtils';
 import { File } from 'buffer';
 
 export async function POST(request: Request) {
@@ -14,10 +13,6 @@ export async function POST(request: Request) {
   if (!session?.user?.email) {
     return new NextResponse('Unauthorized', { status: 401 });
   }
-
-  const email = session.user.email;
-
-  console.log("Email:", email);
 
   try {
     const formData = await request.formData();
@@ -34,22 +29,11 @@ export async function POST(request: Request) {
       return new NextResponse('No audio file provided', { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: email },
-      select: { openaiApiKey: true }
-    });
-  
-    const encryptedApiKey = user?.openaiApiKey || null;
-
-    if (!encryptedApiKey) {
-      return new NextResponse('OpenAI API key not found', { status: 400 });
-    }
-
-    // Decrypt the API key
-    const decryptedApiKey = decrypt(encryptedApiKey);
+    const email = session.user.email;
+    const decryptedApiKey = await getDecryptedApiKey(email);
 
     if (!decryptedApiKey) {
-      return new NextResponse('Failed to decrypt API key', { status: 500 });
+      return new NextResponse('OpenAI API key not found or failed to decrypt', { status: 400 });
     }
 
     const openai = new OpenAI({ apiKey: decryptedApiKey });

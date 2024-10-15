@@ -4,9 +4,8 @@ import { NextResponse } from 'next/server';
 import { RefineRecipeResponse } from '../../../types';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { decrypt } from '@/utils/cryptoUtils'; // Impor
 import OpenAI from 'openai';
-import prisma from '@/lib/prisma';
+import { getDecryptedApiKey } from '@/utils/cryptoUtils';
 
 export async function POST(req: Request) {
   try {
@@ -17,25 +16,10 @@ export async function POST(req: Request) {
     }
 
     const email = session.user.email;
-
-    const user = await prisma.user.findUnique({
-      where: { email: email },
-      select: { openaiApiKey: true }
-    });
-
-    console.log("User:", user);
-  
-    const encryptedApiKey = user?.openaiApiKey || null;
-
-    if (!encryptedApiKey) {
-      return new NextResponse('OpenAI API key not found', { status: 400 });
-    }
-
-    // Decrypt the API key
-    const decryptedApiKey = decrypt(encryptedApiKey);
+    const decryptedApiKey = await getDecryptedApiKey(email);
 
     if (!decryptedApiKey) {
-      return new NextResponse('Failed to decrypt API key', { status: 500 });
+      return new NextResponse('OpenAI API key not found or failed to decrypt', { status: 400 });
     }
 
     const openai = new OpenAI({ apiKey: decryptedApiKey });
