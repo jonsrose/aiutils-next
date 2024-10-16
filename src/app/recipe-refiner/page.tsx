@@ -160,6 +160,37 @@ const RecipeRefinerPage = () => {
         </div>
       )}
 
+      {recipe && (
+        <div className="mt-6">
+          <button
+            onClick={async () => {
+              try {
+                const response = await fetch('/api/save-recipe', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ recipe }),
+                });
+                
+                if (response.ok) {
+                  alert('Recipe saved successfully!');
+                } else {
+                  const errorData = await response.json();
+                  alert(`Failed to save recipe: ${errorData.error}`);
+                }
+              } catch (error) {
+                console.error('Error saving recipe:', error);
+                alert('An error occurred while saving the recipe.');
+              }
+            }}
+            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+          >
+            Save Recipe
+          </button>
+        </div>
+      )}
+
       <div className="mt-6">
         <Link href="/" className="text-blue-500 hover:underline">
           &larr; Back to Home
