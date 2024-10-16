@@ -1,7 +1,7 @@
 // src/app/api/refine-recipe/route.ts
 
 import { NextResponse } from 'next/server';
-import { Recipe, RefineRecipeResponse } from '../../../types';
+import { Recipe } from '../../../types';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import OpenAI from 'openai';
@@ -25,11 +25,11 @@ export async function POST(req: Request) {
     const openai = new OpenAI({ apiKey: decryptedApiKey });
 
     // Parse the request body to extract recipe, model, and readyTime
-    const { recipe, model, readyTime } = await req.json();
+    const { rawRecipe, model, readyTime } = await req.json();
 
     // Construct the prompt
     const prompt = `
-    A recipe is attached, copied from a web page. Your task is to create a cleaned-up recipe that is easier to follow and return it in a specific JSON format:
+    A recipe is attached, copied from a web page. Your task is to create a cleaned-up recipe that is easier to follow and return it in a specific JSON format. Important: Return ONLY the JSON object, without any additional text, markdown formatting, or code blocks. The JSON should have this structure:
     
     {
       "name": "Recipe Name",
@@ -65,7 +65,9 @@ export async function POST(req: Request) {
     ${readyTime ? `- Include approximate start times for each step in order to be ready at ${readyTime}.` : ''}
     
     Recipe:
-    ${recipe}
+    ${rawRecipe}
+
+    Remember: Provide ONLY the JSON object in your response, with no additional text or formatting.
     `;
 
     // Call OpenAI API
@@ -81,52 +83,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No response from OpenAI' }, { status: 500 });
     }
 
-    const cleanedRecipeJson = JSON.parse(assistantMessage);
-    const textOutput = generateTextOutput(cleanedRecipeJson);
-
-    const refineResponse: RefineRecipeResponse = {
-      jsonOutput: cleanedRecipeJson,
-      textOutput,
-    };
-
-    return NextResponse.json(refineResponse, { status: 200 });
+    try {
+      const cleanedRecipe: Recipe = JSON.parse(assistantMessage);
+      return NextResponse.json(cleanedRecipe, { status: 200 });
+    } catch (error) {
+      console.error('Error parsing JSON:', error);
+      return NextResponse.json({ error: 'Invalid JSON response from OpenAI' }, { status: 500 });
+    }
   } catch (error) {
     console.error('Error in refine-recipe API:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-}
-
-function generateTextOutput(recipe: Recipe): string {
-  console.log('generateTextOutput', {recipe});
-  let output = `Recipe: ${recipe.name}\n\n`;
-
-  output += "Ingredients:\n";
-  recipe.ingredients.forEach(ing => {
-    output += `- ${ing.name}: ${ing.quantity}\n`;
-  });
-
-  output += "\nEquipment:\n";
-  recipe.equipment.forEach(eq => {
-    output += `- ${eq}\n`;
-  });
-
-  output += "\nSteps:\n";
-  recipe.steps.forEach((step, index) => {
-    output += `${index + 1}. ${step.description} (${step.duration_minutes} minutes)`;
-    if (step.start_time) {
-      output += ` - Start at ${step.start_time}`;
-    }
-    output += "\n";
-    step.substeps.forEach(substep => {
-      output += `   - ${substep.description}`;
-      if (substep.duration_minutes) {
-        output += ` (${substep.duration_minutes} minutes)`;
-      }
-      output += "\n";
-    });
-  });
-
-  output += `\nTotal Time: ${recipe.total_time_minutes} minutes`;
-
-  return output;
 }

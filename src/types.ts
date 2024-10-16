@@ -24,8 +24,3 @@ export interface Recipe {
   steps: Step[];
   total_time_minutes: number;
 }
-
-export interface RefineRecipeResponse {
-  jsonOutput: string;
-  textOutput: string;
-}

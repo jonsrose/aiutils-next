@@ -3,17 +3,17 @@
 "use client";
 
 import React, { useState, useRef } from 'react';
-import { RefineRecipeResponse } from '../../types';
+import { Recipe } from '../../types';
 import Link from 'next/link';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
 const RecipeRefinerPage = () => {
-  const [recipe, setRecipe] = useState('');
+  const [rawRecipe, setRawRecipe] = useState('');
   const [model, setModel] = useState('gpt-3.5-turbo');
   const [readyTime, setReadyTime] = useState<Date | null>(null);
   const [refinedRecipeText, setRefinedRecipeText] = useState('');
-  const [refinedRecipe, setRefinedRecipe] = useState<string | null>(null);
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -22,7 +22,7 @@ const RecipeRefinerPage = () => {
     e.preventDefault();
     setIsLoading(true);
     setRefinedRecipeText('');
-    setRefinedRecipe(null);
+    setRecipe(null);
     setWordCount(0);
 
     try {
@@ -32,7 +32,7 @@ const RecipeRefinerPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          recipe,
+          rawRecipe,
           model,
           readyTime: readyTime ? readyTime.toTimeString().slice(0, 5) : null,
         }),
@@ -42,11 +42,9 @@ const RecipeRefinerPage = () => {
         throw new Error('Network response was not ok');
       }
 
-      const data: RefineRecipeResponse = await response.json();
+      const recipe: Recipe = await response.json();
 
-      setRefinedRecipe(data.jsonOutput);
-      setRefinedRecipeText(data.textOutput);
-      setWordCount(data.textOutput.split(/\s+/).length);
+      setRecipe(recipe);
     } catch (error) {
       console.error(error);
       console.error('Failed to refine the recipe. Please try again.');
@@ -68,13 +66,13 @@ const RecipeRefinerPage = () => {
       <h1 className="text-2xl font-bold mb-4">Recipe Refiner</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="recipe" className="block text-sm font-medium text-gray-700">
-            Paste Your Raw Recipe:
+          <label htmlFor="rawRecipe" className="block text-sm font-medium text-gray-700">
+            Paste Your Recipe:
           </label>
           <textarea
-            id="recipe"
-            value={recipe}
-            onChange={(e) => setRecipe(e.target.value)}
+            id="rawRecipe"
+            value={rawRecipe}
+            onChange={(e) => setRawRecipe(e.target.value)}
             required
             rows={6}
             className="mt-1 p-2 w-full border border-gray-300 rounded-md"
@@ -125,33 +123,11 @@ const RecipeRefinerPage = () => {
 
       {/* TODO {isLoading && <Loading />} */}
 
-      {refinedRecipeText && (
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">Refined Recipe (Text)</h2>
-          <div className="relative">
-            <textarea
-              ref={textareaRef}
-              value={refinedRecipeText}
-              readOnly
-              rows={10}
-              className="w-full p-2 border border-gray-300 rounded-md"
-            ></textarea>
-            <button
-              onClick={handleCopy}
-              className="absolute top-2 right-2 px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
-            >
-              Copy
-            </button>
-          </div>
-          <p className="mt-1 text-sm text-gray-600">Word Count: {wordCount}</p>
-        </div>
-      )}
-
-      {refinedRecipe && (
+      {recipe && (
         <div className="mt-6">
           <h2 className="text-xl font-semibold mb-2">Refined Recipe (JSON)</h2>
           <pre className="p-2 bg-gray-100 rounded-md overflow-auto">
-            {JSON.stringify(JSON.parse(refinedRecipe), null, 2)}
+            {JSON.stringify(recipe, null, 2)}
           </pre>
         </div>
       )}
