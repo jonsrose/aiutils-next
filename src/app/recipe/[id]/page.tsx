@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 import RecipeComponent from '../../../components/RecipeComponent';
 import { Recipe } from '../../../types';
 
@@ -10,6 +12,9 @@ const RecipePage = () => {
   const { id } = useParams();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+  const [startTime, setStartTime] = useState<Date | null>(null);
+  const [endTime, setEndTime] = useState<Date | null>(null);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -42,7 +47,49 @@ const RecipePage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-2">Set Recipe Time</h2>
+        {!startTime && !endTime ? (
+          <div className="flex items-center space-x-4">
+            <DatePicker
+              selected={selectedTime}
+              onChange={(time: Date | null) => setSelectedTime(time)}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={15}
+              timeCaption="Time"
+              dateFormat="h:mm aa"
+              className="border rounded px-2 py-1"
+            />
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              onClick={() => setStartTime(selectedTime)}
+            >
+              Set as Start Time
+            </button>
+            <button
+              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              onClick={() => setEndTime(selectedTime)}
+            >
+              Set as End Time
+            </button>
+          </div>
+        ) : (
+          <div>
+            {startTime && <p>Starting at {startTime.toLocaleTimeString()}</p>}
+            {endTime && <p>Ending at {endTime.toLocaleTimeString()}</p>}
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              onClick={() => {
+                setStartTime(null);
+                setEndTime(null);
+              }}
+            >
+              Clear
+            </button>
+          </div>
+        )}
+      </div>
       <RecipeComponent recipe={recipe} />
       <div className="mt-6">
         <Link href="/recipe-list" className="text-blue-500 hover:underline">
