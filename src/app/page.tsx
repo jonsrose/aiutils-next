@@ -51,6 +51,14 @@ function Home() {
               Recipe Refiner
             </Link>
           </li>
+          <li>
+            <Link 
+              href="/recipe-list" 
+              className="text-blue-500 hover:text-blue-700 underline"
+            >
+              Recipe List
+            </Link>
+          </li>
         </ul>
       </nav>
     </main>
