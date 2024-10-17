@@ -24,15 +24,17 @@ export async function POST(req: Request) {
 
     const openai = new OpenAI({ apiKey: decryptedApiKey });
 
-    // Parse the request body to extract recipe, model, and readyTime
-    const { rawRecipe, model, readyTime } = await req.json();
+    // Parse the request body to extract name, recipe, model,
+    const { recipeName, recipeUrl, rawRecipe, model } = await req.json();
 
     // Construct the prompt
     const prompt = `
-    A recipe is attached, copied from a web page. Your task is to create a cleaned-up recipe that is easier to follow and return it in a specific JSON format. Important: Return ONLY the JSON object, without any additional text, markdown formatting, or code blocks. The JSON should have this structure:
+    A recipe name, optional recipe URL, and recipe is attached, copied from a web page. Your task is to create a cleaned-up recipe that is easier to follow and return it in a specific JSON format. Important: Return ONLY the JSON object, without any additional text, markdown formatting, or code blocks. The JSON should have this structure:
     
     {
       "name": "Recipe Name",
+      "url": "Recipe URL",
+      "total_time_minutes": number,
       "ingredients": [
         { "name": "Ingredient Name", "quantity": "Quantity" }
       ],
@@ -43,27 +45,34 @@ export async function POST(req: Request) {
         {
           "description": "Step Description",
           "duration_minutes": number,
-          "start_time": "HH:MM" (optional),
           "substeps": [
             {
               "description": "Substep Description",
-              "duration_minutes": number (optional)
+              "duration_minutes": number (optional),
+              "ingredients": [
+                { "name": "Ingredient Name", "quantity": "Quantity" }
+              ]
             }
           ]
         }
       ],
-      "total_time_minutes": number
     }
     
     Guidelines:
     - The ingredients should be a list with quantities.
     - The equipment should be a list of equipment needed. Be specific about the measuring cup and spoon sizes needed.
     - Each step should have a description, duration in minutes, and a list of substeps.
-    - Each substep where an ingredient is added should be separate.
+    - each sentence within a step should be a substep.
+    - if a step or subtep contains a list of ingredients, each ingredient should be a seperate ingredient in the substep.
     - Include durations in minutes for each step and the total time.
+    - Take into account any estimated durations and actual specified durations in caculating the time for each step.
+    - If a step has no specified duration, estimate a reasonable duration in minutes.
+    - make sure the total time is the sum of all the step times.
     - Ignore anything from the input that is not relevant to the recipe.
-    ${readyTime ? `- Include approximate start times for each step in order to be ready at ${readyTime}.` : ''}
     
+    Recipe Name: ${recipeName}
+    Recipe URL: ${recipeUrl}
+
     Recipe:
     ${rawRecipe}
 

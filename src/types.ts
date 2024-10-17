@@ -8,6 +8,7 @@ export interface Ingredient {
 export interface Substep {
   description: string;
   duration_minutes?: number;
+  ingredients?: Ingredient[];
 }
 
 export interface Step {

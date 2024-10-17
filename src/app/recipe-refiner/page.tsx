@@ -5,25 +5,20 @@
 import React, { useState, useRef } from 'react';
 import { Recipe } from '../../types';
 import Link from 'next/link';
-import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
 
 const RecipeRefinerPage = () => {
+  const [recipeName, setRecipeName] = useState('');
+  const [recipeUrl, setRecipeUrl] = useState('');
   const [rawRecipe, setRawRecipe] = useState('');
-  const [model, setModel] = useState('gpt-3.5-turbo');
-  const [readyTime, setReadyTime] = useState<Date | null>(null);
-  const [refinedRecipeText, setRefinedRecipeText] = useState('');
+  const [model, setModel] = useState('gpt-4-turbo');
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [wordCount, setWordCount] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setRefinedRecipeText('');
     setRecipe(null);
-    setWordCount(0);
 
     try {
       const response = await fetch('/api/refine-recipe', {
@@ -32,9 +27,10 @@ const RecipeRefinerPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          recipeName,
+          recipeUrl,
           rawRecipe,
           model,
-          readyTime: readyTime ? readyTime.toTimeString().slice(0, 5) : null,
         }),
       });
 
@@ -66,6 +62,29 @@ const RecipeRefinerPage = () => {
       <h1 className="text-2xl font-bold mb-4">Recipe Refiner</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
+          <label htmlFor="recipeName" className="block text-sm font-medium text-gray-700">
+            Recipe Name:
+          </label>
+          <input
+            id="recipeName"
+            value={recipeName}
+            onChange={(e) => setRecipeName(e.target.value)}
+            required
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+          />
+        </div>
+        <div>
+          <label htmlFor="recipeUrl" className="block text-sm font-medium text-gray-700">
+            Recipe URL (Optional):
+          </label>
+          <input
+            id="recipeUrl"
+            value={recipeUrl}
+            onChange={(e) => setRecipeUrl(e.target.value)}
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+          />
+        </div>
+        <div>
           <label htmlFor="rawRecipe" className="block text-sm font-medium text-gray-700">
             Paste Your Recipe:
           </label>
@@ -95,22 +114,6 @@ const RecipeRefinerPage = () => {
           </select>
         </div>
         <div>
-          <label htmlFor="readyTime" className="block text-sm font-medium text-gray-700">
-            Ready Time (Optional):
-          </label>
-          <DatePicker
-            id="readyTime"
-            selected={readyTime}
-            onChange={(date: Date | null) => setReadyTime(date)}
-            showTimeSelect
-            showTimeSelectOnly
-            timeIntervals={15}
-            timeCaption="Time"
-            dateFormat="h:mm aa"
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-          />
-        </div>
-        <div>
           <button
             type="submit"
             disabled={isLoading}
@@ -124,7 +127,7 @@ const RecipeRefinerPage = () => {
       {/* TODO {isLoading && <Loading />} */}
 
       {recipe && (
-        <div className="mt-6 p-6 rounded-lg shadow-md">
+        <div className="mt-6 p-6 rounded-lg shadow-md max-h-[300px] overflow-y-auto">
           <h1 className="text-2xl font-bold mb-4">Recipe: {recipe.name}</h1>
           <p className="mb-4"><strong>Total Time:</strong> {recipe.total_time_minutes} minutes</p>
           
@@ -146,11 +149,26 @@ const RecipeRefinerPage = () => {
           <ol className="list-decimal pl-5">
             {recipe.steps.map((step, index) => (
               <li key={index} className="mb-2">
-                <p>{step.description}</p>
+                <p>
+                  {step.start_time && <>{step.start_time} </>}
+                  {step.description}
+                  {step.duration_minutes && (` (${step.duration_minutes} minutes)`)}
+                </p>
+                
                 {step.substeps && step.substeps.length > 0 && (
                   <ul className="list-disc pl-5 mt-1">
                     {step.substeps.map((substep, subIndex) => (
-                      <li key={subIndex}>{substep.description}</li>
+                      <li key={subIndex}>
+                        {substep.description}
+                        {substep.duration_minutes && (` (${substep.duration_minutes} minutes)`)}
+                        {substep.ingredients && substep.ingredients.length > 0 && (
+                          <ul className="list-disc pl-5 mt-1">
+                            {substep.ingredients.map((ingredient, ingIndex) => (
+                              <li key={ingIndex}>{ingredient.quantity} {ingredient.name}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </li>
                     ))}
                   </ul>
                 )}
