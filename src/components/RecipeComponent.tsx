@@ -45,7 +45,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
           onChange={() => toggleCheck(id)}
         />
       )}
-      <span className={checkedItems[id] ? 'line-through' : ''}>{children}</span>
+      <span className={isChecklist && checkedItems[id] ? 'line-through' : ''}>{children}</span>
     </div>
   );
 
