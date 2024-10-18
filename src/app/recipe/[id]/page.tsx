@@ -7,6 +7,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import RecipeComponent from '../../../components/RecipeComponent';
 import { Recipe } from '../../../types';
+import { generateMarkdown } from '../../../utils/markdownGenerator';
 
 const RecipePage = () => {
   const { id } = useParams();
@@ -35,6 +36,15 @@ const RecipePage = () => {
 
   const clearChecklist = () => {
     setCheckedItems({});
+  };
+
+  const copyToClipboard = () => {
+    if (recipe) {
+      const markdown = generateMarkdown(recipe, isChecklist);
+      navigator.clipboard.writeText(markdown)
+        .then(() => alert('Recipe copied to clipboard!'))
+        .catch(err => console.error('Failed to copy: ', err));
+    }
   };
 
   useEffect(() => {
@@ -111,7 +121,7 @@ const RecipePage = () => {
           </div>
         )}
       </div>
-      <div className="mb-4 flex items-center">
+      <div className="mb-4 flex items-center space-x-4">
         <label htmlFor="isChecklist" className="mr-2">Show as checklist:</label>
         <input
           type="checkbox"
@@ -120,6 +130,12 @@ const RecipePage = () => {
           onChange={(e) => setIsChecklist(e.target.checked)}
           className="form-checkbox h-5 w-5 text-blue-600"
         />
+        <button
+          onClick={copyToClipboard}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Copy to Clipboard
+        </button>
       </div>
 
       {isChecklist && (
