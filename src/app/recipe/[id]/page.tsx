@@ -16,6 +16,7 @@ const RecipePage = () => {
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
   const [isChecklist, setIsChecklist] = useState(true);
+  const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
 
   const effectiveStartTime = useMemo(() => {
     if (startTime) {
@@ -29,6 +30,12 @@ const RecipePage = () => {
     // Return null if neither startTime nor endTime is set
     return null;
   }, [startTime, endTime, recipe?.total_time_minutes]);
+
+  const hasCheckedItems = Object.values(checkedItems).some(value => value);
+
+  const clearChecklist = () => {
+    setCheckedItems({});
+  };
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -114,11 +121,29 @@ const RecipePage = () => {
           className="form-checkbox h-5 w-5 text-blue-600"
         />
       </div>
+
+      {isChecklist && (
+        <button
+          onClick={clearChecklist}
+          disabled={!hasCheckedItems}
+          className={`mb-4 px-4 py-2 rounded ${
+            hasCheckedItems
+              ? 'bg-red-500 text-white hover:bg-red-600'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
+        >
+          Clear Checklist
+        </button>
+      )}
+
       <RecipeComponent 
         recipe={recipe} 
         effectiveStartTime={effectiveStartTime} 
         isChecklist={isChecklist}
+        checkedItems={checkedItems}
+        setCheckedItems={setCheckedItems}
       />
+
       <div className="mt-6">
         <Link href="/recipe-list" className="text-blue-500 hover:underline">
           &larr; Back to Recipe List

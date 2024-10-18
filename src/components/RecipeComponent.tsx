@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Recipe } from '../types';
 
-interface RecipeProps {
+interface RecipeComponentProps {
   recipe: Recipe;
   effectiveStartTime: Date | null;
   isChecklist: boolean;
+  checkedItems: { [key: string]: boolean };
+  setCheckedItems: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
 }
 
-const RecipeComponent: React.FC<RecipeProps> = ({ recipe, effectiveStartTime, isChecklist }) => {
-  const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
-
+const RecipeComponent: React.FC<RecipeComponentProps> = ({
+  recipe,
+  effectiveStartTime,
+  isChecklist,
+  checkedItems,
+  setCheckedItems
+}) => {
   const toggleCheck = (id: string) => {
     setCheckedItems(prev => ({ ...prev, [id]: !prev[id] }));
   };
