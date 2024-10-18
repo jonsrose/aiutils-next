@@ -15,6 +15,7 @@ const RecipePage = () => {
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
+  const [isChecklist, setIsChecklist] = useState(true);
 
   const effectiveStartTime = useMemo(() => {
     if (startTime) {
@@ -103,7 +104,21 @@ const RecipePage = () => {
           </div>
         )}
       </div>
-      <RecipeComponent recipe={recipe} effectiveStartTime={effectiveStartTime}/>
+      <div className="mb-4 flex items-center">
+        <label htmlFor="isChecklist" className="mr-2">Show as checklist:</label>
+        <input
+          type="checkbox"
+          id="isChecklist"
+          checked={isChecklist}
+          onChange={(e) => setIsChecklist(e.target.checked)}
+          className="form-checkbox h-5 w-5 text-blue-600"
+        />
+      </div>
+      <RecipeComponent 
+        recipe={recipe} 
+        effectiveStartTime={effectiveStartTime} 
+        isChecklist={isChecklist}
+      />
       <div className="mt-6">
         <Link href="/recipe-list" className="text-blue-500 hover:underline">
           &larr; Back to Recipe List
