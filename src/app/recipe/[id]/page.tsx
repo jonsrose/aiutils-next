@@ -40,7 +40,7 @@ const RecipePage = () => {
 
   const copyToClipboard = () => {
     if (recipe) {
-      const markdown = generateMarkdown(recipe, isChecklist, checkedItems);
+      const markdown = generateMarkdown(recipe, isChecklist, checkedItems, effectiveStartTime);
       navigator.clipboard.writeText(markdown)
         .then(() => alert('Recipe copied to clipboard!'))
         .catch(err => console.error('Failed to copy: ', err));

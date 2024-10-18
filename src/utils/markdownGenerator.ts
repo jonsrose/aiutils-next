@@ -3,10 +3,15 @@ import { Recipe } from '../types';
 export function generateMarkdown(
   recipe: Recipe, 
   isChecklist: boolean, 
-  checkedItems: { [key: string]: boolean }
+  checkedItems: { [key: string]: boolean },
+  effectiveStartTime: Date | null
 ): string {
   let markdown = `# ${recipe.name}\n\n`;
   markdown += `**Total Time:** ${recipe.total_time_minutes} minutes\n\n`;
+
+  if (effectiveStartTime) {
+    markdown += `**Start Time:** ${effectiveStartTime.toLocaleTimeString()}\n\n`;
+  }
 
   markdown += `## Ingredients\n\n`;
   recipe.ingredients.forEach((ing, index) => {
@@ -25,10 +30,25 @@ export function generateMarkdown(
   });
 
   markdown += `\n## Steps\n\n`;
+  const initialTime = effectiveStartTime ? new Date(effectiveStartTime) : null;
+  let currentTime = initialTime;
+
   recipe.steps.forEach((step, index) => {
     const isChecked = checkedItems[`step-${index}`];
     const stepPrefix = isChecklist ? `- [${isChecked ? 'x' : ' '}] ` : `${index + 1}. `;
-    markdown += `${stepPrefix}${step.description}${step.duration_minutes ? ` (${step.duration_minutes} minutes)` : ''}\n`;
+    
+    let stepMarkdown = stepPrefix;
+    
+    if (currentTime) {
+      stepMarkdown += `**Start at ${currentTime.toLocaleTimeString()}** - `;
+    }
+    
+    stepMarkdown += `${step.description}${step.duration_minutes ? ` (${step.duration_minutes} minutes)` : ''}\n`;
+    markdown += stepMarkdown;
+
+    if (currentTime && step.duration_minutes) {
+      currentTime = new Date(currentTime.getTime() + step.duration_minutes * 60000);
+    }
 
     if (step.substeps && step.substeps.length > 0) {
       step.substeps.forEach((substep, subIndex) => {
