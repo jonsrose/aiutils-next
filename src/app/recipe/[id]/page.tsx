@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import DatePicker from 'react-datepicker';
@@ -15,6 +15,19 @@ const RecipePage = () => {
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
+
+  const effectiveStartTime = useMemo(() => {
+    if (startTime) {
+      return startTime;
+    } else if (endTime && recipe?.total_time_minutes) {
+      // Derive start time by subtracting total time from end time
+      const endDate = new Date(endTime);
+      endDate.setMinutes(endDate.getMinutes() - recipe.total_time_minutes);
+      return endDate;
+    }
+    // Return null if neither startTime nor endTime is set
+    return null;
+  }, [startTime, endTime, recipe?.total_time_minutes]);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -90,7 +103,7 @@ const RecipePage = () => {
           </div>
         )}
       </div>
-      <RecipeComponent recipe={recipe} />
+      <RecipeComponent recipe={recipe} effectiveStartTime={effectiveStartTime}/>
       <div className="mt-6">
         <Link href="/recipe-list" className="text-blue-500 hover:underline">
           &larr; Back to Recipe List

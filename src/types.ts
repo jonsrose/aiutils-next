@@ -15,7 +15,6 @@ export interface Step {
   description: string;
   duration_minutes: number;
   substeps: Substep[];
-  start_time?: string;
 }
 
 export interface Recipe {

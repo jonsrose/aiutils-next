@@ -2,12 +2,26 @@ import { Recipe } from '../types';
 
 interface RecipeProps {
   recipe: Recipe;
+  effectiveStartTime: Date | null;
 }
 
-const RecipeComponent: React.FC<RecipeProps> = ({ recipe }) => {
+const RecipeComponent: React.FC<RecipeProps> = ({ recipe, effectiveStartTime }) => {
   if (!recipe) {
     return null;
   }
+
+  const calculateStepStartTime = (stepIndex: number): Date | null => {
+    console.log("calculateStepStartTime effectiveStartTime", effectiveStartTime);
+    if (!effectiveStartTime) return null;
+    
+    const minutesToAdd = recipe.steps
+      .slice(0, stepIndex)
+      .reduce((total, step) => total + (step.duration_minutes || 0), 0);
+    
+    const startTime = new Date(effectiveStartTime);
+    startTime.setMinutes(startTime.getMinutes() + minutesToAdd);
+    return startTime;
+  };
 
   return (
     <div>
@@ -33,8 +47,12 @@ const RecipeComponent: React.FC<RecipeProps> = ({ recipe }) => {
         {recipe.steps.map((step, index) => (
           <li key={index} className="mb-2">
             <p>
-              {step.start_time && <>{step.start_time} </>}
-              {step.description}
+              {effectiveStartTime && (
+                <span className="font-semibold">
+                  Start at: {calculateStepStartTime(index)?.toLocaleTimeString()}
+                </span>
+              )}
+              {' '}{step.description}
               {step.duration_minutes && (` (${step.duration_minutes} minutes)`)}
             </p>
             
