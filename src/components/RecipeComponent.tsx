@@ -3,6 +3,7 @@ import { Recipe } from '../types';
 interface RecipeProps {
   recipe: Recipe;
   effectiveStartTime: Date | null;
+  isChecklist: boolean;
 }
 
 const RecipeComponent: React.FC<RecipeProps> = ({ recipe, effectiveStartTime }) => {
