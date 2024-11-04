@@ -12,7 +12,7 @@ export const users = pgTable('users', {
 });
 
 export const accounts = pgTable('accounts', {
-  id: text('id').primaryKey(),
+  id: text('id').notNull().unique(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   type: text('type').notNull(),
   provider: text('provider').notNull(),
@@ -27,7 +27,7 @@ export const accounts = pgTable('accounts', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
-  providerProviderAccountIdIndex: primaryKey(table.provider, table.providerAccountId),
+  pk: primaryKey(table.provider, table.providerAccountId),
 }));
 
 export const sessions = pgTable('sessions', {
