@@ -1,17 +1,19 @@
 {
-  "name": "aiutils",
+  "name": "aiutils-next",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "debug": "NODE_OPTIONS='--inspect' next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "pnpm next dev --port 5173",
+    "debug": "NODE_OPTIONS='--inspect' pnpm next dev --port 5173",
+    "build": "pnpm next build",
+    "start": "pnpm next start",
+    "lint": "pnpm next lint",
+    "db:generate": "pnpm drizzle-kit generate:pg",
+    "db:push": "pnpm drizzle-kit push:pg",
+    "db:studio": "pnpm drizzle-kit studio"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.6.0",
-    "@prisma/client": "^5.20.0",
     "@types/react-datepicker": "^6.2.0",
     "encoding": "^0.1.13",
     "next": "^13.4.0",
@@ -21,7 +23,10 @@
     "react": "^18.2.0",
     "react-datepicker": "^7.4.0",
     "react-dom": "^18.2.0",
-    "resend": "^4.0.0"
+    "resend": "^4.0.0",
+    "drizzle-orm": "^0.29.3",
+    "pg": "^8.11.3",
+    "@vercel/postgres": "^0.7.2"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -31,8 +36,9 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.14",
     "postcss": "^8",
-    "prisma": "^5.20.0",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "drizzle-kit": "^0.20.14",
+    "@types/pg": "^8.11.4"
   }
 }
