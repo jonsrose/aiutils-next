@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { encrypt } from '@/utils/cryptoUtils';
 import { getServerSession } from "next-auth/next";
-import prisma from '@/lib/prisma';
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 export async function POST(request: Request) {
   console.log("Attempting to get server session...");
@@ -20,10 +22,9 @@ export async function POST(request: Request) {
 
   // Store the encrypted OpenAI API key in the database
   if (session?.user?.email) {
-    await prisma.user.update({
-      where: { email: session.user.email },
-      data: { openaiApiKey: encryptedApiKey },
-    });
+    await db.update(users).set({
+      openaiApiKey: encryptedApiKey,
+    }).where(eq(users.email, session.user.email));
   } else {
     throw new Error("User email is missing");
   }

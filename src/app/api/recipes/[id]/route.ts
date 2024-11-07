@@ -1,21 +1,21 @@
 import { NextResponse } from 'next/server';
-import prisma from "@/lib/prisma";
 import { Recipe } from '@/types';
+import { db } from '@/db';
+import { userRecipes } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
 
   try {
-    const userRecipe = await prisma.userRecipe.findUnique({
-      where: {
-        id: id
-      }
+    const userRecipe = await db.query.userRecipes.findFirst({
+      where: eq(userRecipes.id, parseInt(id))
     });
     
     if (!userRecipe) {
       return NextResponse.json({ error: 'Recipe not found' }, { status: 404 });
     }
-    const recipe: Recipe = JSON.parse(userRecipe.recipeJson as string);
+    const recipe: Recipe = JSON.parse(userRecipe.content as string);
     return NextResponse.json(recipe);
   } catch (error) {
     console.error('Error fetching recipe:', error);

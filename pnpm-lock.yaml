@@ -8,6 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@auth/core':
+        specifier: ^0.37.3
+        version: 0.37.3(nodemailer@6.9.16)
+      '@auth/drizzle-adapter':
+        specifier: ^1.7.3
+        version: 1.7.3(nodemailer@6.9.16)
+      '@auth/nextjs':
+        specifier: 0.0.0-380f8d56
+        version: 0.0.0-380f8d56(next@13.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(nodemailer@6.9.16)
       '@auth/prisma-adapter':
         specifier: ^2.6.0
         version: 2.7.2(@prisma/client@5.21.1)(nodemailer@6.9.16)
@@ -22,7 +31,7 @@ importers:
         version: 16.4.5
       drizzle-orm:
         specifier: ^0.29.3
-        version: 0.29.5(@neondatabase/serverless@0.7.2)(@types/pg@8.11.10)(@types/react@18.3.12)(@vercel/postgres@0.7.2)(pg@8.13.1)(react@18.3.1)
+        version: 0.29.5(@neondatabase/serverless@0.7.2)(@types/pg@8.11.10)(@types/react@18.3.12)(@vercel/postgres@0.7.2)(pg@8.13.1)(postgres@3.4.5)(react@18.3.1)
       encoding:
         specifier: ^0.1.13
         version: 0.1.13
@@ -30,8 +39,8 @@ importers:
         specifier: ^13.4.0
         version: 13.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-auth:
-        specifier: ^4.24.8
-        version: 4.24.10(next@13.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(nodemailer@6.9.16)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^4.24.10
+        version: 4.24.10(@auth/core@0.37.3(nodemailer@6.9.16))(next@13.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(nodemailer@6.9.16)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       nodemailer:
         specifier: ^6.9.15
         version: 6.9.16
@@ -41,6 +50,9 @@ importers:
       pg:
         specifier: ^8.11.3
         version: 8.13.1
+      postgres:
+        specifier: ^3.4.5
+        version: 3.4.5
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -51,8 +63,8 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
       resend:
-        specifier: ^4.0.0
-        version: 4.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 4.0.1-alpha.0
+        version: 4.0.1-alpha.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@types/node':
         specifier: ^20
@@ -94,6 +106,14 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
 
+  '@auth/core@0.0.0-380f8d56':
+    resolution: {integrity: sha512-V3nVwrFE6PRTkNv7QVBeiwIYuJ7EgTeQDyUslPQvYTvlwwwpfsp1M7fUFGP0ZVQVfR/BkdqRcTFM3Te2/Nuzjw==}
+    peerDependencies:
+      nodemailer: ^6.8.0
+    peerDependenciesMeta:
+      nodemailer:
+        optional: true
+
   '@auth/core@0.37.2':
     resolution: {integrity: sha512-kUvzyvkcd6h1vpeMAojK2y7+PAV5H+0Cc9+ZlKYDFhDY31AlvsB+GW5vNO4qE3Y07KeQgvNO9U0QUx/fN62kBw==}
     peerDependencies:
@@ -107,6 +127,28 @@ packages:
         optional: true
       nodemailer:
         optional: true
+
+  '@auth/core@0.37.3':
+    resolution: {integrity: sha512-qcffDLwxB9iUYH8GHq68w/KU8jtjAbjjk9xnpoKhjX3+QcntaQ2MKVSkTTocmA6ElpL5vK2xR9CXfQ98dvGnyg==}
+    peerDependencies:
+      '@simplewebauthn/browser': ^9.0.1
+      '@simplewebauthn/server': ^9.0.2
+      nodemailer: ^6.8.0
+    peerDependenciesMeta:
+      '@simplewebauthn/browser':
+        optional: true
+      '@simplewebauthn/server':
+        optional: true
+      nodemailer:
+        optional: true
+
+  '@auth/drizzle-adapter@1.7.3':
+    resolution: {integrity: sha512-0BuGgRjcghoFJQH8796BaLCFXqh77lhizXuDliVK7cF2hs1nXo7eKZ/m5ddFa7ATTOwQ3gncQLHFJ1ap8dOoew==}
+
+  '@auth/nextjs@0.0.0-380f8d56':
+    resolution: {integrity: sha512-5fNAu5BENcoaYh+U/YI3Qs93ZZjL//++P5OSp4aCr5/jF42hZL5ZfbLRoYiq763h4mfQWAE6DElEHUtewkYoBA==}
+    peerDependencies:
+      next: ^13.3.0
 
   '@auth/prisma-adapter@2.7.2':
     resolution: {integrity: sha512-orznIVt6aQMoJ4/rfWFSpRPU8LoZn6jVtDuEkZgLud2xSnCalq6x+hX+rqlk4E5LM13NW1GIJojOPQnM4aM4Gw==}
@@ -579,12 +621,12 @@ packages:
       prisma:
         optional: true
 
-  '@react-email/render@0.0.17':
-    resolution: {integrity: sha512-xBQ+/73+WsGuXKY7r1U73zMBNV28xdV0cp9cFjhNYipBReDHhV97IpA6v7Hl0dDtDzt+yS/72dY5vYXrF1v8NA==}
+  '@react-email/render@1.0.1':
+    resolution: {integrity: sha512-W3gTrcmLOVYnG80QuUp22ReIT/xfLsVJ+n7ghSlG2BITB8evNABn1AO2rGQoXuK84zKtDAlxCdm3hRyIpZdGSA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      react: ^18.2.0
-      react-dom: ^18.2.0
+      react: ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^18.0 || ^19.0 || ^19.0.0-rc
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
@@ -914,13 +956,17 @@ packages:
   config-chain@1.1.13:
     resolution: {integrity: sha512-qj+f8APARXHrM0hraqXYb2/bOVSV4PvJQlNZ/DVj0QrmNM2q2euizkeuVckQ57J+W0mRH6Hvi+k50M4Jul2VRQ==}
 
+  cookie@0.5.0:
+    resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
+    engines: {node: '>= 0.6'}
+
   cookie@0.7.1:
     resolution: {integrity: sha512-6DnInpx7SJ2AK3+CTUE/ZM0vWTUboZCegxhC2xiIydHR9jNuTAASBrfEpHhiGOZw/nX51bHt6YQl8jsGo4y/0w==}
     engines: {node: '>= 0.6'}
 
-  cookie@0.7.2:
-    resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
-    engines: {node: '>= 0.6'}
+  cookie@1.0.1:
+    resolution: {integrity: sha512-Xd8lFX4LM9QEEwxQpF9J9NTUh8pmdJO0cyRJhFiDoLTk2eH8FXlRv2IFGYVadZpqI3j8fhNrSdKCeYPxiAhLXw==}
+    engines: {node: '>=18'}
 
   copy-anything@3.0.5:
     resolution: {integrity: sha512-yCEafptTtb4bk7GLEQoM8KVJpxAfdBJYaXyzQEgQQQgYrZiDp8SJmGKlYza6CYjEDNstAdNdKA3UuoULlEbS6w==}
@@ -1905,6 +1951,9 @@ packages:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
 
+  oauth4webapi@2.17.0:
+    resolution: {integrity: sha512-lbC0Z7uzAFNFyzEYRIC+pkSVvDHJTbEW+dYlSBAlCYDe6RxUkJ26bClhk8ocBZip1wfI9uKTe0fm4Ib4RHn6uQ==}
+
   oauth4webapi@3.1.2:
     resolution: {integrity: sha512-KQZkNU+xn02lWrFu5Vjqg9E81yPtDSxUZorRHlLWVoojD+H/0GFbH59kcnz5Thdjj7c4/mYMBPj/mhvGe/kKXA==}
 
@@ -2158,13 +2207,17 @@ packages:
   postgres-range@1.1.4:
     resolution: {integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==}
 
+  postgres@3.4.5:
+    resolution: {integrity: sha512-cDWgoah1Gez9rN3H4165peY9qfpEo+SA61oQv65O3cRUE1pOEoJWwddwcqKE8XZYjbblOJlYDlLV4h67HrEVDg==}
+    engines: {node: '>=12'}
+
   preact-render-to-string@5.2.3:
     resolution: {integrity: sha512-aPDxUn5o3GhWdtJtW0svRC2SS/l8D9MAgo2+AWml+BhDImb27ALf04Q2d+AHqUUOc6RdSXFIBVa2gxzgMKgtZA==}
     peerDependencies:
       preact: '>=10'
 
-  preact-render-to-string@5.2.6:
-    resolution: {integrity: sha512-JyhErpYOvBV1hEPwIxc/fHWXPfnEGdRKxc8gFdAZ7XV4tlzyzG847XAyEZqoDnynP88akM4eaHcSOzNcLWFguw==}
+  preact-render-to-string@6.5.11:
+    resolution: {integrity: sha512-ubnauqoGczeGISiOh6RjX0/cdaF8v/oDXIjO85XALCQjwQP+SB4RDXXtvZ6yTYSjG+PC1QRP2AhPgCEsM2EvUw==}
     peerDependencies:
       preact: '>=10'
 
@@ -2233,8 +2286,8 @@ packages:
     resolution: {integrity: sha512-vqlC04+RQoFalODCbCumG2xIOvapzVMHwsyIGM/SIE8fRhFFsXeH8/QQ+s0T0kDAhKc4k30s73/0ydkHQz6HlQ==}
     engines: {node: '>= 0.4'}
 
-  resend@4.0.0:
-    resolution: {integrity: sha512-rDX0rspl/XcmC2JV2V5obQvRX2arzxXUvNFUDMOv5ObBLR68+7kigCOysb7+dlkb0JE3erhQG0nHrbBt/ZCWIg==}
+  resend@4.0.1-alpha.0:
+    resolution: {integrity: sha512-qtyGk72ZJ3b3ifmz34l/z/X9EpKuqgjTc76/wihMR8I71IdhDIpIPsx/CgKlkA9oLesc8mryW+zulGr8RtEkJQ==}
     engines: {node: '>=18'}
 
   resolve-from@4.0.0:
@@ -2608,6 +2661,17 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
+  '@auth/core@0.0.0-380f8d56(nodemailer@6.9.16)':
+    dependencies:
+      '@panva/hkdf': 1.2.1
+      cookie: 0.5.0
+      jose: 4.15.9
+      oauth4webapi: 2.17.0
+      preact: 10.11.3
+      preact-render-to-string: 5.2.3(preact@10.11.3)
+    optionalDependencies:
+      nodemailer: 6.9.16
+
   '@auth/core@0.37.2(nodemailer@6.9.16)':
     dependencies:
       '@panva/hkdf': 1.2.1
@@ -2619,6 +2683,32 @@ snapshots:
       preact-render-to-string: 5.2.3(preact@10.11.3)
     optionalDependencies:
       nodemailer: 6.9.16
+
+  '@auth/core@0.37.3(nodemailer@6.9.16)':
+    dependencies:
+      '@panva/hkdf': 1.2.1
+      cookie: 1.0.1
+      jose: 5.9.6
+      oauth4webapi: 3.1.2
+      preact: 10.24.3
+      preact-render-to-string: 6.5.11(preact@10.24.3)
+    optionalDependencies:
+      nodemailer: 6.9.16
+
+  '@auth/drizzle-adapter@1.7.3(nodemailer@6.9.16)':
+    dependencies:
+      '@auth/core': 0.37.3(nodemailer@6.9.16)
+    transitivePeerDependencies:
+      - '@simplewebauthn/browser'
+      - '@simplewebauthn/server'
+      - nodemailer
+
+  '@auth/nextjs@0.0.0-380f8d56(next@13.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(nodemailer@6.9.16)':
+    dependencies:
+      '@auth/core': 0.0.0-380f8d56(nodemailer@6.9.16)
+      next: 13.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+    transitivePeerDependencies:
+      - nodemailer
 
   '@auth/prisma-adapter@2.7.2(@prisma/client@5.21.1)(nodemailer@6.9.16)':
     dependencies:
@@ -2933,7 +3023,7 @@ snapshots:
 
   '@prisma/client@5.21.1': {}
 
-  '@react-email/render@0.0.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@react-email/render@1.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       html-to-text: 9.0.5
       js-beautify: 1.15.1
@@ -3330,9 +3420,11 @@ snapshots:
       ini: 1.3.8
       proto-list: 1.2.4
 
+  cookie@0.5.0: {}
+
   cookie@0.7.1: {}
 
-  cookie@0.7.2: {}
+  cookie@1.0.1: {}
 
   copy-anything@3.0.5:
     dependencies:
@@ -3463,13 +3555,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.29.5(@neondatabase/serverless@0.7.2)(@types/pg@8.11.10)(@types/react@18.3.12)(@vercel/postgres@0.7.2)(pg@8.13.1)(react@18.3.1):
+  drizzle-orm@0.29.5(@neondatabase/serverless@0.7.2)(@types/pg@8.11.10)(@types/react@18.3.12)(@vercel/postgres@0.7.2)(pg@8.13.1)(postgres@3.4.5)(react@18.3.1):
     optionalDependencies:
       '@neondatabase/serverless': 0.7.2
       '@types/pg': 8.11.10
       '@types/react': 18.3.12
       '@vercel/postgres': 0.7.2
       pg: 8.13.1
+      postgres: 3.4.5
       react: 18.3.1
 
   eastasianwidth@0.2.0: {}
@@ -3687,8 +3780,8 @@ snapshots:
       '@typescript-eslint/parser': 8.12.2(eslint@8.57.1)(typescript@5.6.3)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.2(eslint@8.57.1)
       eslint-plugin-react-hooks: 5.0.0-canary-7118f5dd7-20230705(eslint@8.57.1)
@@ -3707,37 +3800,37 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.3.7
       enhanced-resolve: 5.17.1
       eslint: 8.57.1
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       fast-glob: 3.3.2
       get-tsconfig: 4.8.1
       is-bun-module: 1.2.1
       is-glob: 4.0.3
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.12.2(eslint@8.57.1)(typescript@5.6.3)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -3748,7 +3841,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.12.2(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -4413,21 +4506,22 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next-auth@4.24.10(next@13.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(nodemailer@6.9.16)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next-auth@4.24.10(@auth/core@0.37.3(nodemailer@6.9.16))(next@13.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(nodemailer@6.9.16)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.26.0
       '@panva/hkdf': 1.2.1
-      cookie: 0.7.2
+      cookie: 0.7.1
       jose: 4.15.9
       next: 13.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       oauth: 0.9.15
       openid-client: 5.7.0
       preact: 10.24.3
-      preact-render-to-string: 5.2.6(preact@10.24.3)
+      preact-render-to-string: 5.2.3(preact@10.24.3)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       uuid: 8.3.2
     optionalDependencies:
+      '@auth/core': 0.37.3(nodemailer@6.9.16)
       nodemailer: 6.9.16
 
   next-tick@1.1.0: {}
@@ -4478,6 +4572,8 @@ snapshots:
   normalize-path@3.0.0: {}
 
   normalize-range@0.1.2: {}
+
+  oauth4webapi@2.17.0: {}
 
   oauth4webapi@3.1.2: {}
 
@@ -4719,15 +4815,21 @@ snapshots:
 
   postgres-range@1.1.4: {}
 
+  postgres@3.4.5: {}
+
   preact-render-to-string@5.2.3(preact@10.11.3):
     dependencies:
       preact: 10.11.3
       pretty-format: 3.8.0
 
-  preact-render-to-string@5.2.6(preact@10.24.3):
+  preact-render-to-string@5.2.3(preact@10.24.3):
     dependencies:
       preact: 10.24.3
       pretty-format: 3.8.0
+
+  preact-render-to-string@6.5.11(preact@10.24.3):
+    dependencies:
+      preact: 10.24.3
 
   preact@10.11.3: {}
 
@@ -4801,9 +4903,9 @@ snapshots:
       es-errors: 1.3.0
       set-function-name: 2.0.2
 
-  resend@4.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  resend@4.0.1-alpha.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@react-email/render': 0.0.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-email/render': 1.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
       - react
       - react-dom

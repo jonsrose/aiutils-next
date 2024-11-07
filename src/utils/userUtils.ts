@@ -1,9 +1,11 @@
-import prisma from "@/lib/prisma";
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 export async function getUserOpenAIApiKey(email: string): Promise<string | null> {
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: { openaiApiKey: true }
+  const user = await db.query.users.findFirst({
+    where: eq(users.email, email),
+    columns: { openaiApiKey: true }
   });
 
   return user?.openaiApiKey || null;

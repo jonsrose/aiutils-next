@@ -2,15 +2,14 @@ import NextAuth from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import EmailProvider from "next-auth/providers/email"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import { PrismaClient } from "@prisma/client"
-import type { User, Session } from "next-auth"
+import { DrizzleAdapter } from "@auth/drizzle-adapter"
+import { db } from "@/db"
+import type { User, Session, Account } from "next-auth"
+import type { DefaultSession } from "next-auth"
 import { Resend } from 'resend'
-import { Account } from "next-auth";
-import { NextAuthOptions } from "next-auth";
-import { DefaultSession } from "next-auth";
-
-const prismaClient = new PrismaClient()
+import type { NextAuthOptions } from "next-auth"
+import { accounts, users } from "@/db/schema"
+import { eq } from 'drizzle-orm'
 
 declare module "next-auth" {
   interface Session {
@@ -20,111 +19,173 @@ declare module "next-auth" {
   }
 }
 
-async function linkAccount(user: User, account: Account) {
-  // Check if there's an existing account with the same email
-  const existingUser = await prismaClient.user.findUnique({
-    where: { email: user.email as string },
-    include: { accounts: true },
-  })
+interface DbUser {
+  id: string;
+  accounts: Array<{ provider: string }>;
+}
 
-  if (existingUser) {
-    // If the user exists but doesn't have this provider linked
-    if (!existingUser.accounts.some((acc) => acc.provider === account.provider)) {
-      await prismaClient.account.create({
-        data: {
+async function linkAccount(user: User, account: Account) {
+  if (!user.email) {
+    console.error('User email is required')
+    return false
+  }
+
+  try {
+    const existingUser = await db.query.users.findFirst({
+      where: () => eq(users.email, user.email as string),
+      with: {
+        accounts: {
+          columns: {
+            provider: true
+          }
+        }
+      }
+    }) as DbUser | null
+
+    if (existingUser) {
+      const hasProvider = existingUser.accounts.some(acc => acc.provider === account.provider)
+      if (!hasProvider) {
+        await db.insert(accounts).values({
+          id: crypto.randomUUID(),
           userId: existingUser.id,
           type: account.type,
           provider: account.provider,
           providerAccountId: account.providerAccountId,
-          refresh_token: account.refresh_token,
-          access_token: account.access_token,
-          expires_at: account.expires_at,
-          token_type: account.token_type,
+          refreshToken: account.refresh_token,
+          accessToken: account.access_token,
+          expiresAt: account.expires_at,
+          tokenType: account.token_type,
           scope: account.scope,
-          id_token: account.id_token,
-          session_state: account.session_state,
-        },
-      })
+          idToken: account.id_token,
+          sessionState: account.session_state,
+        })
+      }
+      return true
     }
-    return true
-  }
 
-  // If no existing user, create a new user and account
-  await prismaClient.user.create({
-    data: {
+    const userId = crypto.randomUUID()
+    await db.insert(users).values({
+      id: userId,
       name: user.name,
       email: user.email,
       image: user.image,
-      accounts: {
-        create: {
-          type: account.type,
-          provider: account.provider,
-          providerAccountId: account.providerAccountId,
-          refresh_token: account.refresh_token,
-          access_token: account.access_token,
-          expires_at: account.expires_at,
-          token_type: account.token_type,
-          scope: account.scope,
-          id_token: account.id_token,
-          session_state: account.session_state,
-        },
-      },
-    },
-  })
+    })
 
-  return true
+    await db.insert(accounts).values({
+      id: crypto.randomUUID(),
+      userId: userId,
+      type: account.type,
+      provider: account.provider,
+      providerAccountId: account.providerAccountId,
+      refreshToken: account.refresh_token,
+      accessToken: account.access_token,
+      expiresAt: account.expires_at,
+      tokenType: account.token_type,
+      scope: account.scope,
+      idToken: account.id_token,
+      sessionState: account.session_state,
+    })
+
+    return true
+  } catch (error) {
+    console.error('Error in linkAccount:', error)
+    return false
+  }
 }
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const nextAuthSecret = process.env.NEXTAUTH_SECRET;
+if (!process.env.NEXTAUTH_SECRET) {
+  throw new Error('NEXTAUTH_SECRET is not defined')
+}
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prismaClient),
+  adapter: DrizzleAdapter(db),
   providers: [
     GithubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
+      clientId: process.env.GITHUB_ID ?? '',
+      clientSecret: process.env.GITHUB_SECRET ?? '',
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_ID ?? '',
+      clientSecret: process.env.GOOGLE_SECRET ?? '',
     }),
     EmailProvider({
-      from: process.env.EMAIL_FROM,
       sendVerificationRequest: async ({ identifier: email, url }) => {
         const { host } = new URL(url)
-        await resend.emails.send({
-          from: process.env.EMAIL_FROM!,
-          to: email,
-          subject: `Sign in to ${host}`,
-          html: `<p>Click <a href="${url}">here</a> to sign in.</p>`
-        })
+        try {
+          await resend.emails.send({
+            from: process.env.EMAIL_FROM ?? 'onboarding@resend.dev',
+            to: email,
+            subject: `Sign in to ${host}`,
+            html: `<p>Click <a href="${url}">here</a> to sign in.</p>`
+          })
+        } catch (error) {
+          console.error('Error sending verification email:', error)
+          throw new Error('Failed to send verification email')
+        }
       },
     }),
   ],
-  secret: nextAuthSecret,
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ user, account }) {
-      // Custom sign-in logic here
-      if (account) {
-        return await linkAccount(user, account)
+      try {
+        if (!user.email) {
+          console.error('User email is required')
+          return false
+        }
+
+        if (account) {
+          return await linkAccount(user, account)
+        }
+        return true
+      } catch (error) {
+        console.error('Error in signIn callback:', error)
+        return false
       }
-      return true
     },
     async session({ session, user }: { session: Session; user: User }) {
-      if (session.user) {
-        session.user.id = user.id;
-      } else {
-        session.user = { id: user.id };
+      try {
+        if (session.user) {
+          session.user.id = user.id
+        }
+        return session
+      } catch (error) {
+        console.error('Error in session callback:', error)
+        return session
       }
-      return session;
     },
+    async jwt({ token, account }) {
+      try {
+        if (account) {
+          token.accessToken = account.access_token
+          token.provider = account.provider
+        }
+        return token
+      } catch (error) {
+        console.error('Error in jwt callback:', error)
+        return token
+      }
+    }
   },
   pages: {
     signIn: '/signin',
+    error: '/signin', // Redirect to signin page on error
     newUser: '/'
   },
+  debug: process.env.NODE_ENV === 'development',
+  logger: {
+    error: (code, metadata) => {
+      console.error('Auth error:', { code, metadata })
+    },
+    warn: (code) => {
+      console.warn('Auth warning:', code)
+    },
+    debug: (code, metadata) => {
+      console.debug('Auth debug:', { code, metadata })
+    }
+  }
 }
 
 const handler = NextAuth(authOptions)

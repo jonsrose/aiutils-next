@@ -1,5 +1,7 @@
-import prisma from '@/lib/prisma';
 import crypto from 'crypto';
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 // In a real application, this should be a secure, randomly generated key stored in environment variables
 const ENCRYPTION_KEY = crypto.scryptSync(process.env.ENCRYPTION_KEY || 'defaultEncryptionKey', 'salt', 32);
@@ -24,9 +26,9 @@ export function decrypt(text: string): string {
 }
 
 export async function getDecryptedApiKey(email: string): Promise<string | null> {
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: { openaiApiKey: true }
+  const user = await db.query.users.findFirst({
+    where: eq(users.email, email),
+    columns: { openaiApiKey: true }
   });
 
   if (!user?.openaiApiKey) return null;

@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-import prisma from "@/lib/prisma";
-
+import { db } from '@/db';
+import { userRecipes } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 export async function GET() {
   try {
-    const recipes = await prisma.userRecipe.findMany();
+    const recipes = await db.query.userRecipes.findMany();
     return NextResponse.json(recipes);
   } catch (error) {
     console.error('Error fetching recipes:', error);
