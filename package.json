@@ -11,13 +11,12 @@
     "db:generate": "pnpm drizzle-kit generate:pg",
     "db:push": "pnpm drizzle-kit push:pg",
     "db:studio": "pnpm drizzle-kit studio",
-    "db:migrate": "pnpm drizzle-kit migrate"
+    "db:migrate": "pnpm drizzle-kit up:pg"
   },
   "dependencies": {
     "@auth/core": "^0.37.3",
     "@auth/drizzle-adapter": "^1.7.3",
     "@auth/nextjs": "0.0.0-380f8d56",
-    "@auth/prisma-adapter": "^2.6.0",
     "@types/react-datepicker": "^6.2.0",
     "@vercel/postgres": "^0.7.2",
     "dotenv": "^16.4.5",
