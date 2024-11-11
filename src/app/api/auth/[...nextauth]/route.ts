@@ -12,6 +12,10 @@ import { accounts, sessions, verificationTokens, users } from "@/db/schema"
 import { eq } from 'drizzle-orm'
 import { DefaultPostgresUsersTable, DefaultPostgresAccountsTable, DefaultPostgresSessionsTable, DefaultPostgresVerificationTokenTable } from '@auth/drizzle-adapter'
 
+const baseUrl = process.env.NEXTAUTH_URL;
+
+console.log("baseUrl", baseUrl)
+
 declare module "next-auth" {
   interface Session {
     user?: DefaultSession["user"] & {
@@ -114,6 +118,7 @@ if (!githubId || !githubSecret) {
 console.log("All env vars:", {
   GITHUB_ID: process.env.GITHUB_ID,
   GOOGLE_ID: process.env.GOOGLE_ID,
+  GITHUB_SECRET: process.env.GITHUB_SECRET,
   NODE_ENV: process.env.NODE_ENV,
   pwd: process.cwd(), // This will show us where Next.js is running from
 });
@@ -129,6 +134,40 @@ export const authOptions: NextAuthOptions = {
     GithubProvider({
       clientId: githubId,
       clientSecret: githubSecret,
+      authorization: {
+        params: {
+          params: { 
+            scope: "read:user user:email",
+            redirect_uri: `${baseUrl}/api/auth/callback/github`
+          }
+        }
+      },
+      token: {
+        url: "https://github.com/login/oauth/access_token",
+        async request({ client, params, checks }) {
+          console.log("Token Request Params:", params);
+          const response = await client.oauthCallback(
+            `${baseUrl}/api/auth/callback/github`,
+            params,
+            checks
+          );
+          if ('error' in response) {
+            console.error('OAuth error:', response);
+            throw new Error(response.error_description || 'OAuth token exchange failed');
+          }
+          console.log("Token Response:", response);
+          return { tokens: response };
+        }
+      },
+      userinfo: "https://api.github.com/user",
+      profile(profile) {
+        return {
+          id: profile.id.toString(),
+          name: profile.name || profile.login,
+          email: profile.email,
+          image: profile.avatar_url
+        }
+      }
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_ID ?? '',
