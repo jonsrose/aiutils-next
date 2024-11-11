@@ -102,6 +102,22 @@ if (!process.env.NEXTAUTH_SECRET) {
   throw new Error('NEXTAUTH_SECRET is not defined')
 }
 
+console.log("github id", process.env.GITHUB_ID)
+
+const githubId = process.env.GITHUB_ID
+const githubSecret = process.env.GITHUB_SECRET
+
+if (!githubId || !githubSecret) {
+  throw new Error('Missing GitHub OAuth credentials')
+}
+
+console.log("All env vars:", {
+  GITHUB_ID: process.env.GITHUB_ID,
+  GOOGLE_ID: process.env.GOOGLE_ID,
+  NODE_ENV: process.env.NODE_ENV,
+  pwd: process.cwd(), // This will show us where Next.js is running from
+});
+
 export const authOptions: NextAuthOptions = {
   adapter: DrizzleAdapter(db, {
     usersTable: users as DefaultPostgresUsersTable,
@@ -111,8 +127,8 @@ export const authOptions: NextAuthOptions = {
   }),
   providers: [
     GithubProvider({
-      clientId: process.env.GITHUB_ID ?? '',
-      clientSecret: process.env.GITHUB_SECRET ?? '',
+      clientId: githubId,
+      clientSecret: githubSecret,
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_ID ?? '',
