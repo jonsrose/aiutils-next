@@ -8,8 +8,9 @@ import type { User, Session, Account } from "next-auth"
 import type { DefaultSession } from "next-auth"
 import { Resend } from 'resend'
 import type { NextAuthOptions } from "next-auth"
-import { accounts, users } from "@/db/schema"
+import { accounts, sessions, verificationTokens, users } from "@/db/schema"
 import { eq } from 'drizzle-orm'
+import { DefaultPostgresUsersTable, DefaultPostgresAccountsTable, DefaultPostgresSessionsTable, DefaultPostgresVerificationTokenTable } from '@auth/drizzle-adapter'
 
 declare module "next-auth" {
   interface Session {
@@ -24,74 +25,76 @@ interface DbUser {
   accounts: Array<{ provider: string }>;
 }
 
-async function linkAccount(user: User, account: Account) {
-  if (!user.email) {
-    console.error('User email is required')
-    return false
-  }
+// async function linkAccount(user: User, account: Account) {
+//     console.log("Yo im in linkAccount", { user, account });  
 
-  try {
-    const existingUser = await db.query.users.findFirst({
-      where: () => eq(users.email, user.email as string),
-      with: {
-        accounts: {
-          columns: {
-            provider: true
-          }
-        }
-      }
-    }) as DbUser | null
+//   if (!user.email) {
+//     console.error('User email is required')
+//     return false
+//   }
 
-    if (existingUser) {
-      const hasProvider = existingUser.accounts.some(acc => acc.provider === account.provider)
-      if (!hasProvider) {
-        await db.insert(accounts).values({
-          id: crypto.randomUUID(),
-          userId: existingUser.id,
-          type: account.type,
-          provider: account.provider,
-          providerAccountId: account.providerAccountId,
-          refreshToken: account.refresh_token,
-          accessToken: account.access_token,
-          expiresAt: account.expires_at,
-          tokenType: account.token_type,
-          scope: account.scope,
-          idToken: account.id_token,
-          sessionState: account.session_state,
-        })
-      }
-      return true
-    }
+//   try {
+//     const existingUser = await db.query.users.findFirst({
+//       where: () => eq(users.email, user.email as string)
+//       // with: {
+//       //   accounts: {
+//       //     columns: {
+//       //       provider: true
+//       //     }
+//       //   }
+//       // }
+//     }) as DbUser | null
 
-    const userId = crypto.randomUUID()
-    await db.insert(users).values({
-      id: userId,
-      name: user.name,
-      email: user.email,
-      image: user.image,
-    })
+//     if (existingUser) {
+//       const hasProvider = existingUser.accounts.some(acc => acc.provider === account.provider)
+//       if (!hasProvider) {
+//         await db.insert(accounts).values({
+//           id: crypto.randomUUID(),
+//           userId: existingUser.id,
+//           type: account.type,
+//           provider: account.provider,
+//           providerAccountId: account.providerAccountId,
+//           refreshToken: account.refresh_token,
+//           accessToken: account.access_token,
+//           expiresAt: account.expires_at,
+//           tokenType: account.token_type,
+//           scope: account.scope,
+//           idToken: account.id_token,
+//           sessionState: account.session_state,
+//         })
+//       }
+//       return true
+//     }
 
-    await db.insert(accounts).values({
-      id: crypto.randomUUID(),
-      userId: userId,
-      type: account.type,
-      provider: account.provider,
-      providerAccountId: account.providerAccountId,
-      refreshToken: account.refresh_token,
-      accessToken: account.access_token,
-      expiresAt: account.expires_at,
-      tokenType: account.token_type,
-      scope: account.scope,
-      idToken: account.id_token,
-      sessionState: account.session_state,
-    })
+//     const userId = crypto.randomUUID()
+//     await db.insert(users).values({
+//       id: userId,
+//       name: user.name,
+//       email: user.email,
+//       image: user.image,
+//     })
 
-    return true
-  } catch (error) {
-    console.error('Error in linkAccount:', error)
-    return false
-  }
-}
+//     await db.insert(accounts).values({
+//       id: crypto.randomUUID(),
+//       userId: userId,
+//       type: account.type,
+//       provider: account.provider,
+//       providerAccountId: account.providerAccountId,
+//       refreshToken: account.refresh_token,
+//       accessToken: account.access_token,
+//       expiresAt: account.expires_at,
+//       tokenType: account.token_type,
+//       scope: account.scope,
+//       idToken: account.id_token,
+//       sessionState: account.session_state,
+//     })
+
+//     return true
+//   } catch (error) {
+//     console.error('Error in linkAccount:', error)
+//     return false
+//   }
+// }
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -100,7 +103,12 @@ if (!process.env.NEXTAUTH_SECRET) {
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: DrizzleAdapter(db),
+  adapter: DrizzleAdapter(db, {
+    usersTable: users as DefaultPostgresUsersTable,
+    accountsTable: accounts as DefaultPostgresAccountsTable,
+    sessionsTable: sessions as DefaultPostgresSessionsTable,
+    verificationTokensTable: verificationTokens as DefaultPostgresVerificationTokenTable,
+  }),
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID ?? '',
@@ -129,16 +137,16 @@ export const authOptions: NextAuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn({ user }) {
       try {
         if (!user.email) {
           console.error('User email is required')
           return false
         }
 
-        if (account) {
-          return await linkAccount(user, account)
-        }
+        // if (account) {
+        //   return await linkAccount(user, account)
+        // }
         return true
       } catch (error) {
         console.error('Error in signIn callback:', error)

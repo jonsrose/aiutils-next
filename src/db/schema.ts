@@ -1,4 +1,5 @@
 import { jsonb, pgTable, serial, text, timestamp, integer, primaryKey } from 'drizzle-orm/pg-core';
+import { randomUUID } from 'crypto';
 
 export const users = pgTable('users', {
   id: text('id').primaryKey(),
@@ -31,13 +32,15 @@ export const accounts = pgTable('accounts', {
 }));
 
 export const sessions = pgTable('sessions', {
-  id: text('id').primaryKey(),
+  id: text('id').primaryKey().notNull().$defaultFn(() => randomUUID()),
   sessionToken: text('session_token').unique().notNull(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   expires: timestamp('expires').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-});
+}, (table) => ({
+  sessionTokenIndex: primaryKey(table.sessionToken),
+}));
 
 export const verificationTokens = pgTable('verification_tokens', {
   identifier: text('identifier').notNull(),
