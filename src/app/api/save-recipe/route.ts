@@ -15,13 +15,13 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { title, content } = body;
+    const { recipe } = body;
 
     const [newRecipe] = await db.insert(userRecipes)
       .values({
         userId: session.user.id,
-        title,
-        content,
+        title: recipe.name,
+        content: recipe,
       })
       .returning();
 
