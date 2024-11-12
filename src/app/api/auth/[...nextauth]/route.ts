@@ -29,76 +29,72 @@ interface DbUser {
   accounts: Array<{ provider: string }>;
 }
 
-// async function linkAccount(user: User, account: Account) {
-//     console.log("Yo im in linkAccount", { user, account });  
+async function linkAccount(user: User, account: Account) {
+    console.log("Yo im in linkAccount", { user, account });  
 
-//   if (!user.email) {
-//     console.error('User email is required')
-//     return false
-//   }
+  if (!user.email) {
+    console.error('User email is required')
+    return false
+  }
 
-//   try {
-//     const existingUser = await db.query.users.findFirst({
-//       where: () => eq(users.email, user.email as string)
-//       // with: {
-//       //   accounts: {
-//       //     columns: {
-//       //       provider: true
-//       //     }
-//       //   }
-//       // }
-//     }) as DbUser | null
+  try {
+    const existingUser = await db.query.users.findFirst({
+      where: () => eq(users.email, user.email as string),
+    })
 
-//     if (existingUser) {
-//       const hasProvider = existingUser.accounts.some(acc => acc.provider === account.provider)
-//       if (!hasProvider) {
-//         await db.insert(accounts).values({
-//           id: crypto.randomUUID(),
-//           userId: existingUser.id,
-//           type: account.type,
-//           provider: account.provider,
-//           providerAccountId: account.providerAccountId,
-//           refreshToken: account.refresh_token,
-//           accessToken: account.access_token,
-//           expiresAt: account.expires_at,
-//           tokenType: account.token_type,
-//           scope: account.scope,
-//           idToken: account.id_token,
-//           sessionState: account.session_state,
-//         })
-//       }
-//       return true
-//     }
+    if (existingUser) {
+      const existingAccount = await db.query.accounts.findFirst({
+        where: (accounts) => 
+          eq(accounts.userId, existingUser.id) && 
+          eq(accounts.provider, account.provider)
+      })
 
-//     const userId = crypto.randomUUID()
-//     await db.insert(users).values({
-//       id: userId,
-//       name: user.name,
-//       email: user.email,
-//       image: user.image,
-//     })
+      if (!existingAccount) {
+        await db.insert(accounts).values({
+          userId: existingUser.id,
+          type: "oauth",
+          provider: account.provider,
+          providerAccountId: account.providerAccountId,
+          refresh_token: account.refresh_token,
+          access_token: account.access_token,
+          expires_at: account.expires_at,
+          token_type: account.token_type,
+          scope: account.scope,
+          id_token: account.id_token,
+          session_state: account.session_state,
+        })
+      }
+      return true
+    }
 
-//     await db.insert(accounts).values({
-//       id: crypto.randomUUID(),
-//       userId: userId,
-//       type: account.type,
-//       provider: account.provider,
-//       providerAccountId: account.providerAccountId,
-//       refreshToken: account.refresh_token,
-//       accessToken: account.access_token,
-//       expiresAt: account.expires_at,
-//       tokenType: account.token_type,
-//       scope: account.scope,
-//       idToken: account.id_token,
-//       sessionState: account.session_state,
-//     })
+    const userId = crypto.randomUUID()
+    await db.insert(users).values({
+      id: userId,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+    })
 
-//     return true
-//   } catch (error) {
-//     console.error('Error in linkAccount:', error)
-//     return false
-//   }
-// }
+    await db.insert(accounts).values({
+      userId: userId,
+      type: "oauth",
+      provider: account.provider,
+      providerAccountId: account.providerAccountId,
+      refresh_token: account.refresh_token,
+      access_token: account.access_token,
+      expires_at: account.expires_at,
+      token_type: account.token_type,
+      scope: account.scope,
+      id_token: account.id_token,
+      session_state: account.session_state,
+    })
+
+    return true
+  } catch (error) {
+    console.error('Error in linkAccount:', error)
+    return false
+  }
+}
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -153,7 +149,7 @@ export const authOptions: NextAuthOptions = {
           );
           if ('error' in response) {
             console.error('OAuth error:', response);
-            throw new Error(response.error_description || 'OAuth token exchange failed');
+            throw new Error(String(response.error_description) || 'OAuth token exchange failed');
           }
           console.log("Token Response:", response);
           return { tokens: response };
@@ -192,16 +188,16 @@ export const authOptions: NextAuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async signIn({ user }) {
+    async signIn({ user, account }) {
       try {
         if (!user.email) {
           console.error('User email is required')
           return false
         }
 
-        // if (account) {
-        //   return await linkAccount(user, account)
-        // }
+        if (account) {
+          return await linkAccount(user, account)
+        }
         return true
       } catch (error) {
         console.error('Error in signIn callback:', error)
