@@ -15,7 +15,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     if (!userRecipe) {
       return NextResponse.json({ error: 'Recipe not found' }, { status: 404 });
     }
-    const recipe: Recipe = JSON.parse(userRecipe.content as string);
+    const recipe: Recipe = userRecipe.content as Recipe;
     return NextResponse.json(recipe);
   } catch (error) {
     console.error('Error fetching recipe:', error);
