@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 interface RecipeListItem {
   id: string;
-  name: string;
+  title: string;
 }
 
 const RecipeListPage = () => {
@@ -45,7 +45,7 @@ const RecipeListPage = () => {
           {recipes.map((recipe) => (
             <li key={recipe.id}>
               <Link href={`/recipe/${recipe.id}`} className="text-blue-500 hover:underline">
-                {recipe.name}
+                {recipe.title}
               </Link>
             </li>
           ))}
