@@ -54,6 +54,7 @@ function SpeechToTextPage() {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(transcription);
+    alert('Copied to clipboard');
   };
 
   return (
@@ -70,7 +71,7 @@ function SpeechToTextPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
         >
           {isLoading ? 'Transcribing...' : 'Transcribe'}
         </button>
@@ -83,7 +84,7 @@ function SpeechToTextPage() {
           <p className="mb-2">Word count: {wordCount}</p>
           <button
             onClick={copyToClipboard}
-            className="bg-gray-200 px-3 py-1 rounded"
+            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
           >
             Copy to clipboard
           </button>
