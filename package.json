@@ -2,6 +2,7 @@
   "name": "aiutils-next",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@9.0.1",
   "scripts": {
     "dev": "pnpm next dev --port 5173",
     "debug": "NODE_OPTIONS='--inspect' pnpm next dev --port 5173",
