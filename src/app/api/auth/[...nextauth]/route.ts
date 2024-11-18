@@ -8,9 +8,8 @@ import type { User, Session, Account } from "next-auth"
 import type { DefaultSession } from "next-auth"
 import { Resend } from 'resend'
 import type { NextAuthOptions } from "next-auth"
-import { accounts, sessions, verificationTokens, users } from "@/db/schema"
+import { accounts, users } from "@/db/schema"
 import { eq } from 'drizzle-orm'
-import { DefaultPostgresUsersTable, DefaultPostgresAccountsTable, DefaultPostgresSessionsTable, DefaultPostgresVerificationTokenTable } from '@auth/drizzle-adapter'
 
 const baseUrl = process.env.NEXTAUTH_URL;
 
@@ -22,11 +21,6 @@ declare module "next-auth" {
       id: string
     }
   }
-}
-
-interface DbUser {
-  id: string;
-  accounts: Array<{ provider: string }>;
 }
 
 async function linkAccount(user: User, account: Account) {
@@ -120,12 +114,7 @@ console.log("All env vars:", {
 });
 
 export const authOptions: NextAuthOptions = {
-  adapter: DrizzleAdapter(db, {
-    usersTable: users as DefaultPostgresUsersTable,
-    accountsTable: accounts as DefaultPostgresAccountsTable,
-    sessionsTable: sessions as DefaultPostgresSessionsTable,
-    verificationTokensTable: verificationTokens as DefaultPostgresVerificationTokenTable,
-  }),
+  adapter: DrizzleAdapter(db),
   providers: [
     GithubProvider({
       clientId: githubId,

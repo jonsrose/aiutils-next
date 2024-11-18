@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1730695222041,
+      "tag": "0000_cloudy_ben_grimm",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1730695710439,
+      "tag": "0001_daily_valkyrie",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1731564076544,
+      "tag": "0002_burly_proteus",
+      "breakpoints": true
+    }
+  ]
+}

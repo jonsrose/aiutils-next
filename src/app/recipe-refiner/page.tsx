@@ -2,13 +2,10 @@
 
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Recipe } from '../../types';
 import RecipeComponent from '../../components/RecipeComponent';
 import Link from 'next/link';
-import { db } from '@/db';
-import { userRecipes } from '@/db/schema';
-import { desc } from 'drizzle-orm';
 
 const RecipeRefinerPage = () => {
   const [recipeName, setRecipeName] = useState('');
@@ -17,7 +14,7 @@ const RecipeRefinerPage = () => {
   const [model, setModel] = useState('gpt-4-turbo');
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,13 +50,13 @@ const RecipeRefinerPage = () => {
     }
   };
 
-  const handleCopy = () => {
-    if (textareaRef.current) {
-      textareaRef.current.select();
-      document.execCommand('copy');
-      console.log('Copied to clipboard!');
-    }
-  };
+  // const handleCopy = () => {
+  //   if (textareaRef.current) {
+  //     textareaRef.current.select();
+  //     document.execCommand('copy');
+  //     console.log('Copied to clipboard!');
+  //   }
+  // };
 
   return (
     <div className="container mx-auto p-4">
@@ -128,9 +125,11 @@ const RecipeRefinerPage = () => {
         </div>
       </form>
 
-      {recipe && <div className="mt-6 p-6 rounded-lg shadow-md max-h-[300px] overflow-y-auto">
-        <RecipeComponent recipe={recipe} />
-      </div>}
+      {recipe && (
+        <div className="mt-6 p-6 rounded-lg shadow-md max-h-[300px] overflow-y-auto">
+          <RecipeComponent recipe={recipe} effectiveStartTime={null} />
+        </div>
+      )}
 
       {recipe && (
         <div className="mt-6">

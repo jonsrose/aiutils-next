@@ -3,10 +3,10 @@ import { Recipe } from '../types';
 
 interface RecipeComponentProps {
   recipe: Recipe;
-  effectiveStartTime: Date | null;
-  isChecklist: boolean;
-  checkedItems: { [key: string]: boolean };
-  setCheckedItems: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
+  effectiveStartTime?: Date | null;
+  isChecklist?: boolean;
+  checkedItems?: { [key: string]: boolean };
+  setCheckedItems?: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
 }
 
 const RecipeComponent: React.FC<RecipeComponentProps> = ({
@@ -17,7 +17,9 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
   setCheckedItems
 }) => {
   const toggleCheck = (id: string) => {
-    setCheckedItems(prev => ({ ...prev, [id]: !prev[id] }));
+    if (setCheckedItems) {
+      setCheckedItems(prev => ({ ...prev, [id]: !prev[id] }));
+    }
   };
 
   if (!recipe) return null;
@@ -41,11 +43,11 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
         <input
           type="checkbox"
           className="mt-1 mr-2"
-          checked={checkedItems[id] || false}
+          checked={checkedItems?.[id] ?? false}
           onChange={() => toggleCheck(id)}
         />
       )}
-      <span className={isChecklist && checkedItems[id] ? 'line-through' : ''}>{children}</span>
+      <span className={isChecklist && checkedItems?.[id] ? 'line-through' : ''}>{children}</span>
     </div>
   );
 
