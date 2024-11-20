@@ -1,6 +1,5 @@
 import crypto from 'crypto';
-import { db } from '@/db';
-import { users } from '@/db/schema';
+import { users, db } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
 // In a real application, this should be a secure, randomly generated key stored in environment variables

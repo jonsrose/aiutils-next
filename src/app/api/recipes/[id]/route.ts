@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Recipe } from '@/types';
-import { db } from '@/db';
-import { userRecipes } from '@/db/schema';
+import { userRecipes, db } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { encrypt } from '@/utils/cryptoUtils';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { db } from '@/db';
+import { db } from '@/db/schema';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 

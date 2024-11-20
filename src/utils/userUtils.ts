@@ -1,5 +1,4 @@
-import { db } from '@/db';
-import { users } from '@/db/schema';
+import { users, db } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function getUserOpenAIApiKey(email: string): Promise<string | null> {
