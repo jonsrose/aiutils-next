@@ -23,74 +23,6 @@ declare module "next-auth" {
   }
 }
 
-async function linkAccount(user: User, account: Account) {
-    console.log("Yo im in linkAccount", { user, account });  
-
-  if (!user.email) {
-    console.error('User email is required')
-    return false
-  }
-
-  try {
-    const existingUser = await db.select().from(users).where(
-      eq(users.email, user.email as string)
-    ).limit(1);
-
-    if (existingUser[0]) {
-      const existingAccount = await db.select().from(accounts).where(
-        and(
-          eq(accounts.userId, existingUser[0].id),
-          eq(accounts.provider, account.provider)
-        )
-      ).limit(1);
-
-      if (!existingAccount) {
-        await db.insert(accounts).values({
-          userId: existingUser[0].id,
-          type: "oauth",
-          provider: account.provider,
-          providerAccountId: account.providerAccountId,
-          refresh_token: account.refresh_token,
-          access_token: account.access_token,
-          expires_at: account.expires_at,
-          token_type: account.token_type,
-          scope: account.scope,
-          id_token: account.id_token,
-          session_state: account.session_state,
-        })
-      }
-      return true
-    }
-
-    const userId = crypto.randomUUID()
-    await db.insert(users).values({
-      id: userId,
-      name: user.name,
-      email: user.email,
-      image: user.image,
-    })
-
-    await db.insert(accounts).values({
-      userId: userId,
-      type: "oauth",
-      provider: account.provider,
-      providerAccountId: account.providerAccountId,
-      refresh_token: account.refresh_token,
-      access_token: account.access_token,
-      expires_at: account.expires_at,
-      token_type: account.token_type,
-      scope: account.scope,
-      id_token: account.id_token,
-      session_state: account.session_state,
-    })
-
-    return true
-  } catch (error) {
-    console.error('Error in linkAccount:', error)
-    return false
-  }
-}
-
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 if (!process.env.NEXTAUTH_SECRET) {
@@ -120,6 +52,7 @@ export const authOptions: NextAuthOptions = {
     GithubProvider({
       clientId: githubId,
       clientSecret: githubSecret,
+      allowDangerousEmailAccountLinking: true, 
       authorization: {
         params: {
           params: { 
@@ -158,6 +91,7 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_ID ?? '',
       clientSecret: process.env.GOOGLE_SECRET ?? '',
+      allowDangerousEmailAccountLinking: true, 
     }),
     EmailProvider({
       sendVerificationRequest: async ({ identifier: email, url }) => {
@@ -178,44 +112,11 @@ export const authOptions: NextAuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async signIn({ user, account }) {
-      try {
-        if (!user.email) {
-          console.error('User email is required')
-          return false
-        }
-
-        if (account) {
-          return await linkAccount(user, account)
-        }
-        return true
-      } catch (error) {
-        console.error('Error in signIn callback:', error)
-        return false
+    async session({ session, user }) {
+      if (session.user) {
+        session.user.id = user.id;
       }
-    },
-    async session({ session, user }: { session: Session; user: User }) {
-      try {
-        if (session.user) {
-          session.user.id = user.id
-        }
-        return session
-      } catch (error) {
-        console.error('Error in session callback:', error)
-        return session
-      }
-    },
-    async jwt({ token, account }) {
-      try {
-        if (account) {
-          token.accessToken = account.access_token
-          token.provider = account.provider
-        }
-        return token
-      } catch (error) {
-        console.error('Error in jwt callback:', error)
-        return token
-      }
+      return session;
     }
   },
   pages: {
