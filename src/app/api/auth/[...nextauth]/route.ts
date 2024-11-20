@@ -8,7 +8,7 @@ import type { DefaultSession } from "next-auth"
 import { Resend } from 'resend'
 import type { NextAuthOptions } from "next-auth"
 import { accounts, users } from "@/db/schema"
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
 import { db } from "@/db/schema";
 
 const baseUrl = process.env.NEXTAUTH_URL;
@@ -32,20 +32,21 @@ async function linkAccount(user: User, account: Account) {
   }
 
   try {
-    const existingUser = await db.query.users.findFirst({
-      where: () => eq(users.email, user.email as string),
-    })
+    const existingUser = await db.select().from(users).where(
+      eq(users.email, user.email as string)
+    ).limit(1);
 
-    if (existingUser) {
-      const existingAccount = await db.query.accounts.findFirst({
-        where: (accounts) => 
-          eq(accounts.userId, existingUser.id) && 
+    if (existingUser[0]) {
+      const existingAccount = await db.select().from(accounts).where(
+        and(
+          eq(accounts.userId, existingUser[0].id),
           eq(accounts.provider, account.provider)
-      })
+        )
+      ).limit(1);
 
       if (!existingAccount) {
         await db.insert(accounts).values({
-          userId: existingUser.id,
+          userId: existingUser[0].id,
           type: "oauth",
           provider: account.provider,
           providerAccountId: account.providerAccountId,
