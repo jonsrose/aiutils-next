@@ -1,5 +1,5 @@
 {
-  "id": "2932fc99-5569-49a7-803e-e43ba5c4537f",
+  "id": "caeb8844-6289-4a60-9044-95fbff57d275",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -232,6 +232,48 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "user_recipe": {
+      "name": "user_recipe",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_recipe_userId_user_id_fk": {
+          "name": "user_recipe_userId_user_id_fk",
+          "tableFrom": "user_recipe",
+          "tableTo": "user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "user": {
       "name": "user",
       "schema": "",
@@ -262,6 +304,12 @@
         },
         "image": {
           "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "openaiApiKey": {
+          "name": "openaiApiKey",
           "type": "text",
           "primaryKey": false,
           "notNull": false

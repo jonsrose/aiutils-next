@@ -1,6 +1,12 @@
 import crypto from 'crypto';
-import { users, db } from '@/db/schema';
+import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { type DrizzleDB } from '@/db/index';
+import { connection } from '@/db/index';
+const { users } = schema;
+
+const db = drizzle<typeof schema>(connection) as DrizzleDB;
 
 // In a real application, this should be a secure, randomly generated key stored in environment variables
 const ENCRYPTION_KEY = crypto.scryptSync(process.env.ENCRYPTION_KEY || 'defaultEncryptionKey', 'salt', 32);

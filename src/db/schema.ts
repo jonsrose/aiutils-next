@@ -5,6 +5,8 @@ import {
   text,
   primaryKey,
   integer,
+  jsonb,
+  serial,
 } from "drizzle-orm/pg-core"
 import postgres from "postgres"
 import { drizzle } from "drizzle-orm/postgres-js"
@@ -91,3 +93,11 @@ export const authenticators = pgTable(
     }),
   })
 )
+
+export const userRecipes = pgTable("user_recipe", {
+  id: serial("id").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  content: jsonb("content").notNull(),
+});
