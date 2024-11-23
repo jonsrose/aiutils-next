@@ -1,5 +1,5 @@
 {
-  "id": "50719c29-ec12-4e6d-955e-469ed575594e",
+  "id": "caeb8844-6289-4a60-9044-95fbff57d275",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -244,12 +244,6 @@
         },
         "userId": {
           "name": "userId",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
