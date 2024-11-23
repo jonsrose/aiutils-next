@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 interface RecipeListItem {
   id: string;
-  title: string;
+  name: string;
 }
 
 const RecipeListPage = () => {
@@ -41,11 +41,11 @@ const RecipeListPage = () => {
       {recipes.length === 0 ? (
         <p>No recipes found. Start by refining a recipe!</p>
       ) : (
-        <ul className="space-y-2">
+        <ul className="space-y-2 min-h-fit">
           {recipes.map((recipe) => (
-            <li key={recipe.id}>
-              <Link href={`/recipe/${recipe.id}`} className="text-blue-500 hover:underline">
-                {recipe.title}
+            <li key={recipe.id} className="block">
+              <Link href={`/recipe/${recipe.id}`} className="text-blue-500 hover:underline block py-2">
+                {recipe.name}
               </Link>
             </li>
           ))}
