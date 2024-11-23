@@ -1,11 +1,5 @@
-import * as schema from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { type DrizzleDB } from '@/db/index';
-import { connection } from '@/db/index';
-
-const db = drizzle<typeof schema>(connection) as DrizzleDB;
-const { users } = schema;
+import { db, users } from '@/db/schema';
 
 export async function getUserOpenAIApiKey(email: string): Promise<string | null> {
   const user = await db.query.users.findFirst({

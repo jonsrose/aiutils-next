@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/db';
+import { db } from '@/db/schema';
 import { userRecipes } from '@/db/schema';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
