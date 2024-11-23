@@ -6,7 +6,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import type { DefaultSession } from "next-auth"
 import { Resend } from 'resend'
 import type { NextAuthOptions } from "next-auth"
-import { db } from "@/db/schema";
+import { db } from "@/db";
 
 const baseUrl = process.env.NEXTAUTH_URL;
 

@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm';
-import { db, users } from '@/db/schema';
+import { db } from '@/db';
+import { users } from '@/db/schema';
 
 export async function getUserOpenAIApiKey(email: string): Promise<string | null> {
   const user = await db.query.users.findFirst({

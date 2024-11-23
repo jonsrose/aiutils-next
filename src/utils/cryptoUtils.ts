@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { eq } from 'drizzle-orm';
-import { db, users } from '@/db/schema';
+import { db } from '@/db';
+import { users } from '@/db/schema';
 
 // In a real application, this should be a secure, randomly generated key stored in environment variables
 const ENCRYPTION_KEY = crypto.scryptSync(process.env.ENCRYPTION_KEY || 'defaultEncryptionKey', 'salt', 32);

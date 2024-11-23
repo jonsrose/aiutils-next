@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/db/schema';
+import { db } from '@/db';
 export async function GET() {
   try {
     const recipes = await db.query.userRecipes.findMany();

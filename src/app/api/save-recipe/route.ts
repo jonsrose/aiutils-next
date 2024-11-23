@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/db/schema';
+import { db } from '@/db';
 import { userRecipes } from '@/db/schema';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     const [newRecipe] = await db.insert(userRecipes)
       .values({
         userId: session.user.id,
-        title: recipe.name,
+        name: recipe.name,
         content: recipe,
       })
       .returning();

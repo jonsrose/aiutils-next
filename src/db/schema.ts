@@ -8,8 +8,7 @@ import {
   jsonb,
   serial,
 } from "drizzle-orm/pg-core"
-import postgres from "postgres"
-import { drizzle } from "drizzle-orm/postgres-js"
+
 import type { AdapterAccount } from "next-auth/adapters"
  
 export const users = pgTable("user", {
@@ -95,16 +94,6 @@ export const userRecipes = pgTable("user_recipe", {
   userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
   content: jsonb("content").notNull(),
 });
-
-const pool = postgres(process.env.POSTGRES_URL!)
- 
-export const db = drizzle(pool, { schema: {
-  users,
-  accounts,
-  sessions,
-  verificationTokens,
-  authenticators,
-  userRecipes,
-} });
