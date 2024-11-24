@@ -40,6 +40,7 @@ console.log("All env vars:", {
   GOOGLE_ID: process.env.GOOGLE_ID,
   GITHUB_SECRET: process.env.GITHUB_SECRET,
   NODE_ENV: process.env.NODE_ENV,
+  POSTGRES_URL: process.env.POSTGRES_URL,
   pwd: process.cwd(), // This will show us where Next.js is running from
 });
 
