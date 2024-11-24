@@ -63,7 +63,7 @@ function SpeechToTextPage() {
       <form onSubmit={handleSubmit} className="mb-4">
         <input
           type="file"
-          accept="audio/*"
+          accept="audio/mp3,audio/wav,audio/m4a,audio/aac,audio/mpeg,.mp3,.wav,.m4a,.aac"
           onChange={handleFileChange}
           ref={fileInputRef}
           className="mb-2"
