@@ -38,24 +38,24 @@ const RecipeListPage = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">My Recipes</h1>
+      <div className="mb-4">
+        <Link href="/recipe-helper/import" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+          Import New Recipe
+        </Link>
+      </div>
       {recipes.length === 0 ? (
         <p>No recipes found. Start by refining a recipe!</p>
       ) : (
         <ul className="space-y-2 min-h-fit">
           {recipes.map((recipe) => (
             <li key={recipe.id} className="block">
-              <Link href={`/recipe/${recipe.id}`} className="text-blue-500 hover:underline block py-2">
+              <Link href={`/recipe-helper/recipe/${recipe.id}`} className="text-blue-500 hover:underline block py-2">
                 {recipe.name}
               </Link>
             </li>
           ))}
         </ul>
       )}
-      <div className="mt-6">
-        <Link href="/" className="text-blue-500 hover:underline">
-          &larr; Back to Home
-        </Link>
-      </div>
     </div>
   );
 };

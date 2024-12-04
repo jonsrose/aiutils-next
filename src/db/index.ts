@@ -4,7 +4,10 @@ import * as schema from './schema';
 
 // Create the postgres connection
 export const connection = postgres(process.env.POSTGRES_URL!, {
-  ssl: 'require'
+  ssl: 'require',
+  connect_timeout: 10,
+  idle_timeout: 20,
+  max_lifetime: 60 * 30
 });
 
 // Test connection

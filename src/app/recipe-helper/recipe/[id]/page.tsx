@@ -5,9 +5,9 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import RecipeComponent from '../../../components/RecipeComponent';
-import { Recipe } from '../../../types';
-import { generateMarkdown } from '../../../utils/markdownGenerator';
+import RecipeComponent from '../../../../components/RecipeComponent';
+import { Recipe } from '../../../../types';
+import { generateMarkdown } from '../../../../utils/markdownGenerator';
 
 const RecipePage = () => {
   const { id } = useParams();
@@ -161,8 +161,8 @@ const RecipePage = () => {
       />
 
       <div className="mt-6">
-        <Link href="/recipe-list" className="text-blue-500 hover:underline">
-          &larr; Back to Recipe List
+        <Link href="/recipe-helper" className="text-blue-500 hover:underline">
+          &larr; Back to Recipe Helper
         </Link>
       </div>
     </div>

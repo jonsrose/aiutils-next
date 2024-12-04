@@ -1,64 +1,51 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { withAuth } from '@/components/withAuth'
-import { signOut, useSession } from 'next-auth/react'
+import { withAuth } from "@/components/withAuth";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+
+const features = [
+  {
+    href: "/store-api-key",
+    label: "Store API Key",
+    description: "Securely store your API keys for various services",
+  },
+  {
+    href: "/recipe-helper",
+    label: "Recipe Helper",
+    description: "Import and clean up recipes from the web",
+  },
+  {
+    href: "/speech-to-text",
+    label: "Speech to Text",
+    description: "Convert spoken words into written text",
+  },
+];
 
 function Home() {
-  const { data: session } = useSession()
+  const { data: session } = useSession();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1 className="text-4xl font-bold mb-8">Welcome to Our App</h1>
-      
-      <h1>Welcome to the Home Page, {session?.user?.name ?? 'User'}!</h1>
-      
-      <nav className="mt-8">
-        <ul className="space-y-4">
-          <li>
-            <Link 
-              href="/store-api-key" 
-              className="text-blue-500 hover:text-blue-700 underline"
+    <div className="p-8">
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-4xl font-bold mb-2">Welcome, {session?.user?.name ?? "User"}!</h1>
+        <p className="text-muted-foreground mb-8">Select a feature to get started with AI Utils</p>
+        
+        <div className="grid gap-6 sm:grid-cols-3">
+          {features.map((feature) => (
+            <Link
+              key={feature.href}
+              href={feature.href}
+              className="block p-6 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
             >
-              Store API Key
+              <h2 className="text-xl font-semibold mb-2">{feature.label}</h2>
+              <p className="text-muted-foreground">{feature.description}</p>
             </Link>
-          </li>
-          <li>
-            <Link 
-              href="/speech-to-text" 
-              className="text-blue-500 hover:text-blue-700 underline"
-            >
-              Speech to Text
-            </Link>
-          </li>
-          <li>
-            <Link 
-              href="/recipe-refiner" 
-              className="text-blue-500 hover:text-blue-700 underline"
-            >
-              Recipe Refiner
-            </Link>
-          </li>
-          <li>
-            <Link 
-              href="/recipe-list" 
-              className="text-blue-500 hover:text-blue-700 underline"
-            >
-              Recipe List
-            </Link>
-          </li>
-          <li>
-            <button
-              onClick={() => signOut({ callbackUrl: '/signin' })}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Sign Out
-            </button>
-          </li>
-        </ul>
-      </nav>
-    </main>
-  )
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default withAuth(Home)
+export default withAuth(Home);

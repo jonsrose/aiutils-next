@@ -94,7 +94,10 @@ export async function POST(req: Request) {
 
     try {
       const cleanedRecipe: Recipe = JSON.parse(assistantMessage);
-      return NextResponse.json(cleanedRecipe, { status: 200 });
+      return NextResponse.json({ 
+        recipe: cleanedRecipe, 
+        redirectUrl: '/recipe-helper'
+      }, { status: 200 });
     } catch (error) {
       console.error('Error parsing JSON:', error);
       return NextResponse.json({ error: 'Invalid JSON response from OpenAI' }, { status: 500 });

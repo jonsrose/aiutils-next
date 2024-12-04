@@ -1,12 +1,11 @@
-'use client';
+"use client";
 
-import React,{ useState, useRef } from 'react';
-import Link from 'next/link';
-import { withAuth } from '@/components/withAuth';
+import React, { useState, useRef } from "react";
+import { withAuth } from "@/components/withAuth";
 
 function SpeechToTextPage() {
   const [file, setFile] = useState<File | null>(null);
-  const [transcription, setTranscription] = useState<string>('');
+  const [transcription, setTranscription] = useState<string>("");
   const [wordCount, setWordCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +20,7 @@ function SpeechToTextPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!file) {
-      setError('Please select an audio file');
+      setError("Please select an audio file");
       return;
     }
 
@@ -29,24 +28,24 @@ function SpeechToTextPage() {
     setError(null);
 
     const formData = new FormData();
-    formData.append('audio', file);
+    formData.append("audio", file);
 
     try {
-      const response = await fetch('/api/speech-to-text', {
-        method: 'POST',
+      const response = await fetch("/api/speech-to-text", {
+        method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error('Transcription failed');
+        throw new Error("Transcription failed");
       }
 
       const data = await response.json();
       setTranscription(data.transcription);
       setWordCount(data.transcription.split(/\s+/).length);
     } catch (err) {
-      console.error('Error during transcription:', err);
-      setError('An error occurred during transcription');
+      console.error("Error during transcription:", err);
+      setError("An error occurred during transcription");
     } finally {
       setIsLoading(false);
     }
@@ -54,7 +53,7 @@ function SpeechToTextPage() {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(transcription);
-    alert('Copied to clipboard');
+    alert("Copied to clipboard");
   };
 
   return (
@@ -73,7 +72,7 @@ function SpeechToTextPage() {
           disabled={isLoading}
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
         >
-          {isLoading ? 'Transcribing...' : 'Transcribe'}
+          {isLoading ? "Transcribing..." : "Transcribe"}
         </button>
       </form>
       {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -90,9 +89,6 @@ function SpeechToTextPage() {
           </button>
         </div>
       )}
-      <Link href="/" className="text-blue-500 hover:underline">
-        Back to Home
-      </Link>
     </div>
   );
 }
