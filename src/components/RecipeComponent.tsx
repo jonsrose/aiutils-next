@@ -107,13 +107,17 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
     }
   };
 
-  const ChecklistItem: React.FC<{ 
-    id: string; 
+  const ChecklistItem: React.FC<{
+    id: string;
     children: React.ReactNode;
     childIds?: string[];
   }> = ({ id, children, childIds = [] }) => (
-    <div 
-      className="flex items-start cursor-pointer" 
+    <div
+      className={`flex items-start cursor-pointer rounded p-1 -ml-1 ${
+        isChecklist && checkedItems?.[id]
+          ? "bg-primary/10 opacity-60"
+          : "hover:bg-primary/5"
+      }`}
       onClick={(e) => {
         e.preventDefault();
         toggleCheck(id, childIds);
@@ -128,7 +132,9 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
           onClick={(e) => e.stopPropagation()}
         />
       )}
-      <span className={isChecklist && checkedItems?.[id] ? 'line-through' : ''}>{children}</span>
+      <span className={isChecklist && checkedItems?.[id] ? "line-through" : ""}>
+        {children}
+      </span>
     </div>
   );
 
