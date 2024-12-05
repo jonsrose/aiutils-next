@@ -118,7 +118,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
     childIds?: string[];
   }> = ({ id, children, childIds = [] }) => (
     <div
-      className={`flex items-start cursor-pointer rounded p-1 -ml-1 ${
+      className={`flex items-start cursor-pointer rounded p-1 ${
         isChecklist && checkedItems?.[id]
           ? "bg-primary/10 opacity-60"
           : "hover:bg-primary/5"
@@ -227,7 +227,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
           </span>
           Ingredients
         </h2>
-        <ul className={`${isChecklist ? "space-y-2" : "list-disc"} pl-5`}>
+        <ul className={`${isChecklist ? "space-y-2" : "list-disc"}`}>
           {recipe.ingredients.map((ingredient, index) => (
             <li key={index} className="text-lg">
               <ChecklistItem id={`ingredient-${index}`}>
@@ -246,7 +246,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
           </span>
           Equipment
         </h2>
-        <ul className={`${isChecklist ? "space-y-2" : "list-disc"} pl-5`}>
+        <ul className={`${isChecklist ? "space-y-2" : "list-disc"}`}>
           {recipe.equipment.map((item, index) => (
             <li key={index} className="text-lg">
               <ChecklistItem id={`equipment-${index}`}>{item}</ChecklistItem>
@@ -262,10 +262,10 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
           </span>
           Steps
         </h2>
-        <ol className={`${isChecklist ? "space-y-4" : "list-decimal"} pl-5`}>
+        <ol className={`${isChecklist ? "space-y-4" : "list-decimal"}`}>
           {recipe.steps.map((step, index) => (
             <li key={index} className="mb-6">
-              <div className="rounded-lg p-4">
+              <div className="rounded-lg">
                 <ChecklistItem
                   id={`step-${index}`}
                   childIds={getStepChildIds(index)}
@@ -285,15 +285,11 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
                 </ChecklistItem>
 
                 {step.substeps && step.substeps.length > 0 && (
-                  <ul
-                    className={`${
-                      isChecklist ? "space-y-2" : "list-disc"
-                    } pl-5`}
-                  >
+                  <ul className={`${isChecklist ? "space-y-2" : "list-disc"}`}>
                     {step.substeps.map((substep, subIndex) => (
                       <li
                         key={subIndex}
-                        className="bg-background rounded-md p-3 mb-2"
+                        className="bg-background rounded-md mb-2"
                       >
                         <ChecklistItem
                           id={`step-${index}-substep-${subIndex}`}
@@ -301,7 +297,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
                         >
                           <div className="text-base">{substep.description}</div>
                           {substep.duration_minutes && (
-                            <div className="text-sm text-muted-foreground mt-1">
+                            <div className="text-sm text-muted-foreground">
                               Duration: {substep.duration_minutes} minutes
                             </div>
                           )}
@@ -312,7 +308,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
                             <ul
                               className={`${
                                 isChecklist ? "space-y-2" : "list-disc"
-                              } pl-5 mt-1`}
+                              }`}
                             >
                               {substep.ingredients.map(
                                 (ingredient, ingIndex) => (
