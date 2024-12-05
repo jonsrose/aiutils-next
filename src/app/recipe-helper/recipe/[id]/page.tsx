@@ -77,80 +77,102 @@ const RecipePage = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">Set Recipe Time</h2>
-        {!startTime && !endTime ? (
-          <div className="flex items-center space-x-4">
-            <DatePicker
-              selected={selectedTime}
-              onChange={(time: Date | null) => setSelectedTime(time)}
-              showTimeSelect
-              showTimeSelectOnly
-              timeIntervals={15}
-              timeCaption="Time"
-              dateFormat="h:mm aa"
-              className="border rounded px-2 py-1"
-            />
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              onClick={() => setStartTime(selectedTime)}
-            >
-              Set as Start Time
-            </button>
-            <button
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-              onClick={() => setEndTime(selectedTime)}
-            >
-              Set as End Time
-            </button>
+    <div className="container mx-auto p-4 space-y-8">
+      <div className="max-w-3xl mx-auto bg-card rounded-lg shadow-md p-6 mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Recipe Settings</h2>
+        
+        <div className="space-y-6">
+          <div className="p-4 bg-muted rounded-lg">
+            <h3 className="text-lg font-medium mb-3">Timing Options</h3>
+            {!startTime && !endTime ? (
+              <div className="flex flex-col sm:flex-row gap-4">
+                <DatePicker
+                  selected={selectedTime}
+                  onChange={(time: Date | null) => setSelectedTime(time)}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="Time"
+                  dateFormat="h:mm aa"
+                  className="w-full sm:w-auto border rounded-md px-3 py-2"
+                />
+                <div className="flex gap-2">
+                  <button
+                    className="flex-1 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+                    onClick={() => setStartTime(selectedTime)}
+                  >
+                    Set Start Time
+                  </button>
+                  <button
+                    className="flex-1 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+                    onClick={() => setEndTime(selectedTime)}
+                  >
+                    Set End Time
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  {startTime && (
+                    <p className="text-sm">Starting at: <span className="font-medium">{startTime.toLocaleTimeString()}</span></p>
+                  )}
+                  {endTime && (
+                    <p className="text-sm">Ending at: <span className="font-medium">{endTime.toLocaleTimeString()}</span></p>
+                  )}
+                </div>
+                <button
+                  className="bg-destructive text-destructive-foreground px-4 py-2 rounded-md hover:bg-destructive/90 transition-colors"
+                  onClick={() => {
+                    setStartTime(null);
+                    setEndTime(null);
+                  }}
+                >
+                  Clear Times
+                </button>
+              </div>
+            )}
           </div>
-        ) : (
-          <div>
-            {startTime && <p>Starting at {startTime.toLocaleTimeString()}</p>}
-            {endTime && <p>Ending at {endTime.toLocaleTimeString()}</p>}
-            <button
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-              onClick={() => {
-                setStartTime(null);
-                setEndTime(null);
-              }}
-            >
-              Clear
-            </button>
-          </div>
-        )}
-      </div>
-      <div className="mb-4 flex items-center space-x-4">
-        <label htmlFor="isChecklist" className="mr-2">Show as checklist:</label>
-        <input
-          type="checkbox"
-          id="isChecklist"
-          checked={isChecklist}
-          onChange={(e) => setIsChecklist(e.target.checked)}
-          className="form-checkbox h-5 w-5 text-blue-600"
-        />
-        <button
-          onClick={copyToClipboard}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Copy to Clipboard
-        </button>
-      </div>
 
-      {isChecklist && (
-        <button
-          onClick={clearChecklist}
-          disabled={!hasCheckedItems}
-          className={`mb-4 px-4 py-2 rounded ${
-            hasCheckedItems
-              ? 'bg-red-500 text-white hover:bg-red-600'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
-        >
-          Clear Checklist
-        </button>
-      )}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="isChecklist"
+                checked={isChecklist}
+                onChange={(e) => setIsChecklist(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300"
+              />
+              <label htmlFor="isChecklist" className="text-sm font-medium">
+                Show as checklist
+              </label>
+            </div>
+            
+            <div className="flex gap-2">
+              <button
+                onClick={copyToClipboard}
+                className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+              >
+                Copy to Clipboard
+              </button>
+              
+              {isChecklist && (
+                <button
+                  onClick={clearChecklist}
+                  disabled={!hasCheckedItems}
+                  className={`px-4 py-2 rounded-md transition-colors ${
+                    hasCheckedItems
+                      ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                      : 'bg-muted text-muted-foreground cursor-not-allowed'
+                  }`}
+                >
+                  Clear Checklist
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
 
       <RecipeComponent 
         recipe={recipe} 
@@ -160,9 +182,12 @@ const RecipePage = () => {
         setCheckedItems={setCheckedItems}
       />
 
-      <div className="mt-6">
-        <Link href="/recipe-helper" className="text-blue-500 hover:underline">
-          &larr; Back to Recipe Helper
+      <div className="max-w-3xl mx-auto mt-8">
+        <Link 
+          href="/recipe-helper" 
+          className="inline-flex items-center text-primary hover:text-primary/80 transition-colors"
+        >
+          <span className="mr-2">←</span> Back to Recipe Helper
         </Link>
       </div>
     </div>

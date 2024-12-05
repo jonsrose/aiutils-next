@@ -52,71 +52,107 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
   );
 
   return (
-    <div>
+    <div className="max-w-3xl mx-auto bg-card rounded-lg shadow-md p-6">
+      <h1 className="text-3xl font-bold mb-6 text-primary">{recipe.name}</h1>
       
-      <h1 className="text-2xl font-bold mb-4">Recipe: {recipe.name}</h1>
-      <p className="mb-4"><strong>Total Time:</strong> {recipe.total_time_minutes} minutes</p>
+      <div className="flex items-center gap-4 mb-6 p-4 bg-muted rounded-md">
+        <div>
+          <span className="block text-sm text-muted-foreground">Total Time</span>
+          <span className="text-xl font-semibold">{recipe.total_time_minutes} minutes</span>
+        </div>
+        {effectiveStartTime && (
+          <div>
+            <span className="block text-sm text-muted-foreground">Start Time</span>
+            <span className="text-xl font-semibold">{effectiveStartTime.toLocaleTimeString()}</span>
+          </div>
+        )}
+      </div>
       
-      <h2 className="text-xl font-semibold mb-2">Ingredients:</h2>
-      <ul className={`${isChecklist ? '' : 'list-disc'} pl-5 mb-4`}>
-        {recipe.ingredients.map((ingredient, index) => (
-          <li key={index}>
-            <ChecklistItem id={`ingredient-${index}`}>
-              {ingredient.quantity} {ingredient.name}
-            </ChecklistItem>
-          </li>
-        ))}
-      </ul>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+          <span className="inline-block w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">1</span>
+          Ingredients
+        </h2>
+        <ul className={`${isChecklist ? 'space-y-2' : 'list-disc'} pl-5`}>
+          {recipe.ingredients.map((ingredient, index) => (
+            <li key={index} className="text-lg">
+              <ChecklistItem id={`ingredient-${index}`}>
+                <span className="font-medium">{ingredient.quantity}</span> {ingredient.name}
+              </ChecklistItem>
+            </li>
+          ))}
+        </ul>
+      </section>
       
-      <h2 className="text-xl font-semibold mb-2">Equipment:</h2>
-      <ul className={`${isChecklist ? '' : 'list-disc'} pl-5 mb-4`}>
-        {recipe.equipment.map((item, index) => (
-          <li key={index}>
-            <ChecklistItem id={`equipment-${index}`}>{item}</ChecklistItem>
-          </li>
-        ))}
-      </ul>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+          <span className="inline-block w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">2</span>
+          Equipment
+        </h2>
+        <ul className={`${isChecklist ? 'space-y-2' : 'list-disc'} pl-5`}>
+          {recipe.equipment.map((item, index) => (
+            <li key={index} className="text-lg">
+              <ChecklistItem id={`equipment-${index}`}>{item}</ChecklistItem>
+            </li>
+          ))}
+        </ul>
+      </section>
       
-      <h2 className="text-xl font-semibold mb-2">Steps:</h2>
-      <ol className={`${isChecklist ? '' : 'list-decimal'} pl-5`}>
-        {recipe.steps.map((step, index) => (
-          <li key={index} className="mb-2">
-            <ChecklistItem id={`step-${index}`}>
-              {effectiveStartTime && (
-                <span className="font-semibold">
-                  Start at: {calculateStepStartTime(index)?.toLocaleTimeString()}
-                </span>
-              )}
-              {' '}{step.description}
-              {step.duration_minutes && (` (${step.duration_minutes} minutes)`)}
-            </ChecklistItem>
-            
-            {step.substeps && step.substeps.length > 0 && (
-              <ul className={`${isChecklist ? '' : 'list-disc'} pl-5 mt-1`}>
-                {step.substeps.map((substep, subIndex) => (
-                  <li key={subIndex}>
-                    <ChecklistItem id={`substep-${index}-${subIndex}`}>
-                      {substep.description}
-                      {substep.duration_minutes && (` (${substep.duration_minutes} minutes)`)}
-                    </ChecklistItem>
-                    {substep.ingredients && substep.ingredients.length > 0 && (
-                      <ul className={`${isChecklist ? '' : 'list-disc'} pl-5 mt-1`}>
-                        {substep.ingredients.map((ingredient, ingIndex) => (
-                          <li key={ingIndex}>
-                            <ChecklistItem id={`substep-ingredient-${index}-${subIndex}-${ingIndex}`}>
-                              {ingredient.quantity} {ingredient.name}
-                            </ChecklistItem>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ol>
+      <section>
+        <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+          <span className="inline-block w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">3</span>
+          Steps
+        </h2>
+        <ol className={`${isChecklist ? 'space-y-4' : 'list-decimal'} pl-5`}>
+          {recipe.steps.map((step, index) => (
+            <li key={index} className="mb-6">
+              <div className="bg-muted/50 rounded-lg p-4">
+                <ChecklistItem id={`step-${index}`}>
+                  {effectiveStartTime && (
+                    <div className="text-sm font-medium text-primary mb-2">
+                      Start at: {calculateStepStartTime(index)?.toLocaleTimeString()}
+                    </div>
+                  )}
+                  <div className="text-lg">{step.description}</div>
+                  {step.duration_minutes && (
+                    <div className="text-sm text-muted-foreground mt-1">
+                      Duration: {step.duration_minutes} minutes
+                    </div>
+                  )}
+                </ChecklistItem>
+                
+                {step.substeps && step.substeps.length > 0 && (
+                  <ul className={`${isChecklist ? 'space-y-2' : 'list-disc'} pl-5 mt-4`}>
+                    {step.substeps.map((substep, subIndex) => (
+                      <li key={subIndex} className="bg-background rounded-md p-3 mb-2">
+                        <ChecklistItem id={`substep-${index}-${subIndex}`}>
+                          <div className="text-base">{substep.description}</div>
+                          {substep.duration_minutes && (
+                            <div className="text-sm text-muted-foreground mt-1">
+                              Duration: {substep.duration_minutes} minutes
+                            </div>
+                          )}
+                        </ChecklistItem>
+                        {substep.ingredients && substep.ingredients.length > 0 && (
+                          <ul className={`${isChecklist ? 'space-y-2' : 'list-disc'} pl-5 mt-1`}>
+                            {substep.ingredients.map((ingredient, ingIndex) => (
+                              <li key={ingIndex}>
+                                <ChecklistItem id={`substep-ingredient-${index}-${subIndex}-${ingIndex}`}>
+                                  {ingredient.quantity} {ingredient.name}
+                                </ChecklistItem>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
     </div>
   );
 };
