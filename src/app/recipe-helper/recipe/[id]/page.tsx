@@ -18,6 +18,7 @@ const RecipePage = () => {
   const [endTime, setEndTime] = useState<Date | null>(null);
   const [isChecklist, setIsChecklist] = useState(true);
   const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
+  const [showTimingOptions, setShowTimingOptions] = useState(false);
 
   const effectiveStartTime = useMemo(() => {
     if (startTime) {
@@ -83,53 +84,66 @@ const RecipePage = () => {
         
         <div className="space-y-6">
           <div className="p-4 bg-muted rounded-lg">
-            <h3 className="text-lg font-medium mb-3">Timing Options</h3>
-            {!startTime && !endTime ? (
-              <div className="flex flex-col sm:flex-row gap-4">
-                <DatePicker
-                  selected={selectedTime}
-                  onChange={(time: Date | null) => setSelectedTime(time)}
-                  showTimeSelect
-                  showTimeSelectOnly
-                  timeIntervals={15}
-                  timeCaption="Time"
-                  dateFormat="h:mm aa"
-                  className="w-full sm:w-auto border rounded-md px-3 py-2"
-                />
-                <div className="flex gap-2">
-                  <button
-                    className="flex-1 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
-                    onClick={() => setStartTime(selectedTime)}
-                  >
-                    Set Start Time
-                  </button>
-                  <button
-                    className="flex-1 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
-                    onClick={() => setEndTime(selectedTime)}
-                  >
-                    Set End Time
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  {startTime && (
-                    <p className="text-sm">Starting at: <span className="font-medium">{startTime.toLocaleTimeString()}</span></p>
-                  )}
-                  {endTime && (
-                    <p className="text-sm">Ending at: <span className="font-medium">{endTime.toLocaleTimeString()}</span></p>
-                  )}
-                </div>
-                <button
-                  className="bg-destructive text-destructive-foreground px-4 py-2 rounded-md hover:bg-destructive/90 transition-colors"
-                  onClick={() => {
-                    setStartTime(null);
-                    setEndTime(null);
-                  }}
-                >
-                  Clear Times
-                </button>
+            <button
+              onClick={() => setShowTimingOptions(!showTimingOptions)}
+              className="w-full flex items-center justify-between text-lg font-medium mb-3 hover:text-primary/80 transition-colors"
+            >
+              <span>Timing Options</span>
+              <span className="text-xl">
+                {showTimingOptions ? '−' : '+'}
+              </span>
+            </button>
+            
+            {showTimingOptions && (
+              <div className="space-y-4">
+                {!startTime && !endTime ? (
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <DatePicker
+                      selected={selectedTime}
+                      onChange={(time: Date | null) => setSelectedTime(time)}
+                      showTimeSelect
+                      showTimeSelectOnly
+                      timeIntervals={15}
+                      timeCaption="Time"
+                      dateFormat="h:mm aa"
+                      className="w-full sm:w-auto border rounded-md px-3 py-2"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        className="flex-1 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+                        onClick={() => setStartTime(selectedTime)}
+                      >
+                        Set Start Time
+                      </button>
+                      <button
+                        className="flex-1 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+                        onClick={() => setEndTime(selectedTime)}
+                      >
+                        Set End Time
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      {startTime && (
+                        <p className="text-sm">Starting at: <span className="font-medium">{startTime.toLocaleTimeString()}</span></p>
+                      )}
+                      {endTime && (
+                        <p className="text-sm">Ending at: <span className="font-medium">{endTime.toLocaleTimeString()}</span></p>
+                      )}
+                    </div>
+                    <button
+                      className="bg-destructive text-destructive-foreground px-4 py-2 rounded-md hover:bg-destructive/90 transition-colors"
+                      onClick={() => {
+                        setStartTime(null);
+                        setEndTime(null);
+                      }}
+                    >
+                      Clear Times
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
