@@ -129,17 +129,19 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
       }}
     >
       {isChecklist && (
-        <input
-          type="checkbox"
-          className="mt-1 mr-2"
-          checked={checkedItems?.[id] ?? false}
-          onChange={() => toggleCheck(id, childIds)}
-          onClick={(e) => e.stopPropagation()}
-        />
+        <div className="flex-shrink-0 w-8">
+          <input
+            type="checkbox"
+            className="mt-1"
+            checked={checkedItems?.[id] ?? false}
+            onChange={() => toggleCheck(id, childIds)}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
       )}
-      <span className={isChecklist && checkedItems?.[id] ? "line-through" : ""}>
+      <div className={`flex-1 ${isChecklist && checkedItems?.[id] ? "line-through" : ""}`}>
         {children}
-      </span>
+      </div>
     </div>
   );
 
@@ -227,7 +229,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
           </span>
           Ingredients
         </h2>
-        <ul className={`${isChecklist ? "space-y-2" : "list-disc"}`}>
+        <ul className="space-y-2">
           {recipe.ingredients.map((ingredient, index) => (
             <li key={index} className="text-lg">
               <ChecklistItem id={`ingredient-${index}`}>
@@ -262,7 +264,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
           </span>
           Steps
         </h2>
-        <ol className={`${isChecklist ? "space-y-4" : "list-decimal"}`}>
+        <ol className="space-y-4">
           {recipe.steps.map((step, index) => (
             <li key={index} className="mb-6">
               <div className="rounded-lg">
@@ -272,8 +274,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
                 >
                   {effectiveStartTime && (
                     <div className="text-sm font-medium text-primary mb-2">
-                      Start at:{" "}
-                      {calculateStepStartTime(index)?.toLocaleTimeString()}
+                      Start at: {calculateStepStartTime(index)?.toLocaleTimeString()}
                     </div>
                   )}
                   <div className="text-lg">{step.description}</div>
@@ -285,12 +286,9 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
                 </ChecklistItem>
 
                 {step.substeps && step.substeps.length > 0 && (
-                  <ul className={`${isChecklist ? "space-y-2" : "list-disc"}`}>
+                  <ul className="space-y-2 pl-6 mt-2">
                     {step.substeps.map((substep, subIndex) => (
-                      <li
-                        key={subIndex}
-                        className="bg-background rounded-md mb-2"
-                      >
+                      <li key={subIndex} className="bg-background rounded-md mb-2">
                         <ChecklistItem
                           id={`step-${index}-substep-${subIndex}`}
                           childIds={getSubstepChildIds(index, subIndex)}
@@ -303,26 +301,19 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
                           )}
                         </ChecklistItem>
 
-                        {substep.ingredients &&
-                          substep.ingredients.length > 0 && (
-                            <ul
-                              className={`${
-                                isChecklist ? "space-y-2" : "list-disc"
-                              }`}
-                            >
-                              {substep.ingredients.map(
-                                (ingredient, ingIndex) => (
-                                  <li key={ingIndex}>
-                                    <ChecklistItem
-                                      id={`step-${index}-substep-${subIndex}-ingredient-${ingIndex}`}
-                                    >
-                                      {ingredient.quantity} {ingredient.name}
-                                    </ChecklistItem>
-                                  </li>
-                                )
-                              )}
-                            </ul>
-                          )}
+                        {substep.ingredients && substep.ingredients.length > 0 && (
+                          <ul className="space-y-2 pl-6 mt-2">
+                            {substep.ingredients.map((ingredient, ingIndex) => (
+                              <li key={ingIndex}>
+                                <ChecklistItem
+                                  id={`step-${index}-substep-${subIndex}-ingredient-${ingIndex}`}
+                                >
+                                  {ingredient.quantity} {ingredient.name}
+                                </ChecklistItem>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </li>
                     ))}
                   </ul>
