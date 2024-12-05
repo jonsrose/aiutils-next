@@ -112,13 +112,20 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
     children: React.ReactNode;
     childIds?: string[];
   }> = ({ id, children, childIds = [] }) => (
-    <div className="flex items-start">
+    <div 
+      className="flex items-start cursor-pointer" 
+      onClick={(e) => {
+        e.preventDefault();
+        toggleCheck(id, childIds);
+      }}
+    >
       {isChecklist && (
         <input
           type="checkbox"
           className="mt-1 mr-2"
           checked={checkedItems?.[id] ?? false}
           onChange={() => toggleCheck(id, childIds)}
+          onClick={(e) => e.stopPropagation()}
         />
       )}
       <span className={isChecklist && checkedItems?.[id] ? 'line-through' : ''}>{children}</span>
