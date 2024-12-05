@@ -16,39 +16,53 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
   checkedItems,
   setCheckedItems
 }) => {
-  // Helper function to get all child IDs for a step
-  const getStepChildIds = (stepIndex: number): string[] => {
-    const childIds: string[] = [];
-    const step = recipe.steps[stepIndex];
-    
-    if (step.substeps) {
-      step.substeps.forEach((_, subIndex) => {
-        // Add substep ID
-        childIds.push(`step-${stepIndex}-substep-${subIndex}`);
-        
-        // Add substep's ingredient IDs
-        const substep = step.substeps![subIndex];
-        if (substep.ingredients) {
-          substep.ingredients.forEach((_, ingIndex) => {
-            childIds.push(`step-${stepIndex}-substep-${subIndex}-ingredient-${ingIndex}`);
-          });
-        }
-      });
+  // Helper to get parent ID from a child ID
+  const getParentId = (id: string): string | null => {
+    // For ingredients of substeps: step-0-substep-1-ingredient-2 -> step-0-substep-1
+    if (id.includes('-ingredient-')) {
+      return id.split('-ingredient-')[0];
     }
-    return childIds;
+    // For substeps: step-0-substep-1 -> step-0
+    if (id.includes('-substep-')) {
+      return id.split('-substep-')[0];
+    }
+    return null;
   };
 
-  // Helper function to get all ingredient IDs for a substep
-  const getSubstepChildIds = (stepIndex: number, subIndex: number): string[] => {
-    const childIds: string[] = [];
-    const substep = recipe.steps[stepIndex].substeps?.[subIndex];
-    
-    if (substep?.ingredients) {
-      substep.ingredients.forEach((_, ingIndex) => {
-        childIds.push(`step-${stepIndex}-substep-${subIndex}-ingredient-${ingIndex}`);
-      });
+  // Helper to get sibling IDs (including the current ID)
+  const getSiblingIds = (id: string): string[] => {
+    const parentId = getParentId(id);
+    if (!parentId) return [];
+
+    if (id.includes('-ingredient-')) {
+      // Get step and substep index from the ID
+      const [stepStr, substepStr] = id.split('-substep-');
+      const stepIndex = parseInt(stepStr.split('-')[1]);
+      const substepIndex = parseInt(substepStr.split('-ingredient-')[0]);
+      const substep = recipe.steps[stepIndex]?.substeps?.[substepIndex];
+      
+      return substep?.ingredients?.map((_, i) => 
+        `${parentId}-ingredient-${i}`
+      ) || [];
     }
-    return childIds;
+    
+    if (id.includes('-substep-')) {
+      // Get step index from the ID
+      const stepIndex = parseInt(parentId.split('-')[1]);
+      const step = recipe.steps[stepIndex];
+      
+      return step?.substeps?.map((_, i) => 
+        `${parentId}-substep-${i}`
+      ) || [];
+    }
+
+    return [];
+  };
+
+  // Helper to check if all siblings are checked
+  const areAllSiblingsChecked = (id: string, state: { [key: string]: boolean }): boolean => {
+    const siblings = getSiblingIds(id);
+    return siblings.length > 0 && siblings.every(siblingId => state[siblingId]);
   };
 
   const toggleCheck = (id: string, childIds: string[] = []) => {
@@ -64,6 +78,29 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
         childIds.forEach(childId => {
           newState[childId] = newValue;
         });
+
+        if (newValue) {
+          // If we're checking an item, check upwards through parents
+          let currentId = id;
+          let parentId = getParentId(currentId);
+          
+          while (parentId) {
+            if (areAllSiblingsChecked(currentId, newState)) {
+              newState[parentId] = true;
+              currentId = parentId;
+              parentId = getParentId(currentId);
+            } else {
+              break;
+            }
+          }
+        } else {
+          // If we're unchecking an item, uncheck all parents
+          let parentId = getParentId(id);
+          while (parentId) {
+            newState[parentId] = false;
+            parentId = getParentId(parentId);
+          }
+        }
         
         return newState;
       });
@@ -101,6 +138,34 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
     const startTime = new Date(effectiveStartTime);
     startTime.setMinutes(startTime.getMinutes() + minutesToAdd);
     return startTime;
+  };
+
+  // Add these helper functions alongside the other helpers
+  const getStepChildIds = (stepIndex: number): string[] => {
+    const childIds: string[] = [];
+    const step = recipe.steps[stepIndex];
+    
+    if (step.substeps) {
+      step.substeps.forEach((_, subIndex) => {
+        const substepId = `step-${stepIndex}-substep-${subIndex}`;
+        childIds.push(substepId);
+        
+        const substep = step.substeps![subIndex];
+        if (substep.ingredients) {
+          substep.ingredients.forEach((_, ingIndex) => {
+            childIds.push(`${substepId}-ingredient-${ingIndex}`);
+          });
+        }
+      });
+    }
+    return childIds;
+  };
+
+  const getSubstepChildIds = (stepIndex: number, subIndex: number): string[] => {
+    const substep = recipe.steps[stepIndex].substeps?.[subIndex];
+    return substep?.ingredients?.map((_, ingIndex) => 
+      `step-${stepIndex}-substep-${subIndex}-ingredient-${ingIndex}`
+    ) || [];
   };
 
   return (
