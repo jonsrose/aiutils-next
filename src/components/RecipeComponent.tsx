@@ -16,11 +16,77 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
   checkedItems,
   setCheckedItems
 }) => {
-  const toggleCheck = (id: string) => {
+  // Helper function to get all child IDs for a step
+  const getStepChildIds = (stepIndex: number): string[] => {
+    const childIds: string[] = [];
+    const step = recipe.steps[stepIndex];
+    
+    if (step.substeps) {
+      step.substeps.forEach((_, subIndex) => {
+        // Add substep ID
+        childIds.push(`step-${stepIndex}-substep-${subIndex}`);
+        
+        // Add substep's ingredient IDs
+        const substep = step.substeps![subIndex];
+        if (substep.ingredients) {
+          substep.ingredients.forEach((_, ingIndex) => {
+            childIds.push(`step-${stepIndex}-substep-${subIndex}-ingredient-${ingIndex}`);
+          });
+        }
+      });
+    }
+    return childIds;
+  };
+
+  // Helper function to get all ingredient IDs for a substep
+  const getSubstepChildIds = (stepIndex: number, subIndex: number): string[] => {
+    const childIds: string[] = [];
+    const substep = recipe.steps[stepIndex].substeps?.[subIndex];
+    
+    if (substep?.ingredients) {
+      substep.ingredients.forEach((_, ingIndex) => {
+        childIds.push(`step-${stepIndex}-substep-${subIndex}-ingredient-${ingIndex}`);
+      });
+    }
+    return childIds;
+  };
+
+  const toggleCheck = (id: string, childIds: string[] = []) => {
     if (setCheckedItems) {
-      setCheckedItems(prev => ({ ...prev, [id]: !prev[id] }));
+      setCheckedItems(prev => {
+        const newState = { ...prev };
+        const newValue = !prev[id];
+        
+        // Set the clicked item
+        newState[id] = newValue;
+        
+        // Set all child items to match parent
+        childIds.forEach(childId => {
+          newState[childId] = newValue;
+        });
+        
+        return newState;
+      });
     }
   };
+
+  const ChecklistItem: React.FC<{ 
+    id: string; 
+    children: React.ReactNode;
+    childIds?: string[];
+  }> = ({ id, children, childIds = [] }) => (
+    <div className="flex items-start">
+      {isChecklist && (
+        <input
+          type="checkbox"
+          className="mt-1 mr-2"
+          checked={checkedItems?.[id] ?? false}
+          onChange={() => toggleCheck(id, childIds)}
+        />
+      )}
+      <span className={isChecklist && checkedItems?.[id] ? 'line-through' : ''}>{children}</span>
+    </div>
+  );
 
   if (!recipe) return null;
 
@@ -36,20 +102,6 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
     startTime.setMinutes(startTime.getMinutes() + minutesToAdd);
     return startTime;
   };
-
-  const ChecklistItem: React.FC<{ id: string; children: React.ReactNode }> = ({ id, children }) => (
-    <div className="flex items-start">
-      {isChecklist && (
-        <input
-          type="checkbox"
-          className="mt-1 mr-2"
-          checked={checkedItems?.[id] ?? false}
-          onChange={() => toggleCheck(id)}
-        />
-      )}
-      <span className={isChecklist && checkedItems?.[id] ? 'line-through' : ''}>{children}</span>
-    </div>
-  );
 
   return (
     <div className="max-w-3xl mx-auto bg-card rounded-lg shadow-md p-6">
@@ -92,7 +144,9 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
         <ul className={`${isChecklist ? 'space-y-2' : 'list-disc'} pl-5`}>
           {recipe.equipment.map((item, index) => (
             <li key={index} className="text-lg">
-              <ChecklistItem id={`equipment-${index}`}>{item}</ChecklistItem>
+              <ChecklistItem id={`equipment-${index}`}>
+                {item}
+              </ChecklistItem>
             </li>
           ))}
         </ul>
@@ -107,7 +161,10 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
           {recipe.steps.map((step, index) => (
             <li key={index} className="mb-6">
               <div className="bg-muted/50 rounded-lg p-4">
-                <ChecklistItem id={`step-${index}`}>
+                <ChecklistItem 
+                  id={`step-${index}`}
+                  childIds={getStepChildIds(index)}
+                >
                   {effectiveStartTime && (
                     <div className="text-sm font-medium text-primary mb-2">
                       Start at: {calculateStepStartTime(index)?.toLocaleTimeString()}
@@ -125,7 +182,10 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
                   <ul className={`${isChecklist ? 'space-y-2' : 'list-disc'} pl-5 mt-4`}>
                     {step.substeps.map((substep, subIndex) => (
                       <li key={subIndex} className="bg-background rounded-md p-3 mb-2">
-                        <ChecklistItem id={`substep-${index}-${subIndex}`}>
+                        <ChecklistItem 
+                          id={`step-${index}-substep-${subIndex}`}
+                          childIds={getSubstepChildIds(index, subIndex)}
+                        >
                           <div className="text-base">{substep.description}</div>
                           {substep.duration_minutes && (
                             <div className="text-sm text-muted-foreground mt-1">
@@ -133,11 +193,14 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
                             </div>
                           )}
                         </ChecklistItem>
+                        
                         {substep.ingredients && substep.ingredients.length > 0 && (
                           <ul className={`${isChecklist ? 'space-y-2' : 'list-disc'} pl-5 mt-1`}>
                             {substep.ingredients.map((ingredient, ingIndex) => (
                               <li key={ingIndex}>
-                                <ChecklistItem id={`substep-ingredient-${index}-${subIndex}-${ingIndex}`}>
+                                <ChecklistItem 
+                                  id={`step-${index}-substep-${subIndex}-ingredient-${ingIndex}`}
+                                >
                                   {ingredient.quantity} {ingredient.name}
                                 </ChecklistItem>
                               </li>
