@@ -118,11 +118,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
     childIds?: string[];
   }> = ({ id, children, childIds = [] }) => (
     <div
-      className={`flex items-start cursor-pointer rounded p-1 ${
-        isChecklist && checkedItems?.[id]
-          ? "bg-primary/10 opacity-60"
-          : "hover:bg-primary/5"
-      }`}
+      className="flex items-start cursor-pointer rounded p-1"
       onClick={(e) => {
         e.preventDefault();
         toggleCheck(id, childIds);
@@ -139,7 +135,11 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
           />
         </div>
       )}
-      <div className={`flex-1 ${isChecklist && checkedItems?.[id] ? "line-through" : ""}`}>
+      <div
+        className={`flex-1 ${
+          isChecklist && checkedItems?.[id] ? "line-through" : ""
+        }`}
+      >
         {children}
       </div>
     </div>
@@ -224,7 +224,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-          <span className="inline-block w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+          <span className="inline-block w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-primary">
             1
           </span>
           Ingredients
@@ -243,7 +243,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-          <span className="inline-block w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+          <span className="inline-block w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-primary">
             2
           </span>
           Equipment
@@ -259,7 +259,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
 
       <section>
         <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-          <span className="inline-block w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+          <span className="inline-block w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-primary">
             3
           </span>
           Steps
@@ -267,14 +267,21 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
         <ol className="space-y-4">
           {recipe.steps.map((step, index) => (
             <li key={index} className="mb-6">
-              <div className="rounded-lg">
+              <div
+                className={`rounded-lg ${
+                  isChecklist && checkedItems?.[`step-${index}`]
+                    ? "bg-slate-100"
+                    : "hover:bg-slate-50"
+                }`}
+              >
                 <ChecklistItem
                   id={`step-${index}`}
                   childIds={getStepChildIds(index)}
                 >
                   {effectiveStartTime && (
                     <div className="text-sm font-medium text-primary mb-2">
-                      Start at: {calculateStepStartTime(index)?.toLocaleTimeString()}
+                      Start at:{" "}
+                      {calculateStepStartTime(index)?.toLocaleTimeString()}
                     </div>
                   )}
                   <div className="text-lg">{step.description}</div>
@@ -286,9 +293,17 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
                 </ChecklistItem>
 
                 {step.substeps && step.substeps.length > 0 && (
-                  <ul className="space-y-2 pl-6 mt-2">
+                  <ul className="space-y-2 mt-2">
                     {step.substeps.map((substep, subIndex) => (
-                      <li key={subIndex} className="bg-background rounded-md mb-2">
+                      <li
+                        key={subIndex}
+                        className={`bg-background rounded-md mb-2 pl-6 ${
+                          isChecklist &&
+                          checkedItems?.[`step-${index}-substep-${subIndex}`]
+                            ? "bg-slate-100"
+                            : "hover:bg-slate-50"
+                        }`}
+                      >
                         <ChecklistItem
                           id={`step-${index}-substep-${subIndex}`}
                           childIds={getSubstepChildIds(index, subIndex)}
@@ -301,19 +316,32 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
                           )}
                         </ChecklistItem>
 
-                        {substep.ingredients && substep.ingredients.length > 0 && (
-                          <ul className="space-y-2 pl-6 mt-2">
-                            {substep.ingredients.map((ingredient, ingIndex) => (
-                              <li key={ingIndex}>
-                                <ChecklistItem
-                                  id={`step-${index}-substep-${subIndex}-ingredient-${ingIndex}`}
-                                >
-                                  {ingredient.quantity} {ingredient.name}
-                                </ChecklistItem>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
+                        {substep.ingredients &&
+                          substep.ingredients.length > 0 && (
+                            <ul className="space-y-2 mt-2">
+                              {substep.ingredients.map(
+                                (ingredient, ingIndex) => (
+                                  <li
+                                    key={ingIndex}
+                                    className={`pl-6 ${
+                                      isChecklist &&
+                                      checkedItems?.[
+                                        `step-${index}-substep-${subIndex}-ingredient-${ingIndex}`
+                                      ]
+                                        ? "bg-slate-100"
+                                        : "hover:bg-slate-50"
+                                    }`}
+                                  >
+                                    <ChecklistItem
+                                      id={`step-${index}-substep-${subIndex}-ingredient-${ingIndex}`}
+                                    >
+                                      {ingredient.quantity} {ingredient.name}
+                                    </ChecklistItem>
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          )}
                       </li>
                     ))}
                   </ul>
