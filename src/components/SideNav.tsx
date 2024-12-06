@@ -7,23 +7,33 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useEffect } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { HomeIcon, LockClosedIcon, SpeakerLoudIcon } from "@radix-ui/react-icons";
+import { FaUtensils } from "react-icons/fa";
 
 const routes = [
   {
-    href: "/",
-    label: "Home",
-  },
-  {
-    href: "/store-api-key",
-    label: "Store API Key",
+    href: "/dashboard",
+    name: "Dashboard",
+    icon: HomeIcon,
+    protected: true,
   },
   {
     href: "/recipe-helper",
-    label: "Recipe Helper",
+    name: "Recipe Helper",
+    icon: FaUtensils,
+    protected: true,
+  },
+  {
+    href: "/store-api-key",
+    name: "Store API Key",
+    icon: LockClosedIcon,
+    label: "Store API Key",
   },
   {
     href: "/speech-to-text",
-    label: "Speech to Text",
+    name: "Speech to Text",
+    icon: SpeakerLoudIcon,
+    protected: true,
   },
 
   // Add more routes as needed
@@ -77,13 +87,14 @@ export function SideNav({ isOpen, onOpenChange }: SideNavProps) {
               href={route.href}
               onClick={handleLinkClick}
               className={cn(
-                "px-2 py-1 mb-1 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors",
+                "px-2 py-1 mb-1 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-2",
                 pathname === route.href
                   ? "bg-accent text-accent-foreground"
                   : ""
               )}
             >
-              {route.label}
+              {route.icon && <route.icon className="h-4 w-4" />}
+              {route.name}
             </Link>
           ))}
           <div className="mt-auto pt-4">
