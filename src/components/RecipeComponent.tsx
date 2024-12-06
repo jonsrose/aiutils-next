@@ -137,7 +137,9 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
       )}
       <div
         className={`flex-1 ${
-          isChecklist && checkedItems?.[id] ? "line-through" : ""
+          isChecklist && checkedItems?.[id]
+            ? "line-through italic text-gray-500"
+            : ""
         }`}
       >
         {children}
@@ -231,7 +233,14 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
         </h2>
         <ul className="space-y-2">
           {recipe.ingredients.map((ingredient, index) => (
-            <li key={index} className="text-lg">
+            <li
+              key={index}
+              className={`text-lg ${
+                isChecklist && checkedItems?.[`ingredient-${index}`]
+                  ? "bg-slate-100"
+                  : "hover:bg-slate-50"
+              }`}
+            >
               <ChecklistItem id={`ingredient-${index}`}>
                 <span className="font-medium">{ingredient.quantity}</span>{" "}
                 {ingredient.name}
@@ -250,7 +259,14 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
         </h2>
         <ul className={`${isChecklist ? "space-y-2" : "list-disc"}`}>
           {recipe.equipment.map((item, index) => (
-            <li key={index} className="text-lg">
+            <li
+              key={index}
+              className={`text-lg ${
+                isChecklist && checkedItems?.[`equipment-${index}`]
+                  ? "bg-slate-100"
+                  : "hover:bg-slate-50"
+              }`}
+            >
               <ChecklistItem id={`equipment-${index}`}>{item}</ChecklistItem>
             </li>
           ))}
