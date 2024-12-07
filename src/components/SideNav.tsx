@@ -7,16 +7,10 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useEffect } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { HomeIcon, LockClosedIcon, SpeakerLoudIcon } from "@radix-ui/react-icons";
+import { LockClosedIcon, SpeakerLoudIcon } from "@radix-ui/react-icons";
 import { FaUtensils } from "react-icons/fa";
 
 const routes = [
-  {
-    href: "/dashboard",
-    name: "Dashboard",
-    icon: HomeIcon,
-    protected: true,
-  },
   {
     href: "/recipe-helper",
     name: "Recipe Helper",
@@ -35,8 +29,6 @@ const routes = [
     icon: SpeakerLoudIcon,
     protected: true,
   },
-
-  // Add more routes as needed
 ];
 
 interface SideNavProps {
