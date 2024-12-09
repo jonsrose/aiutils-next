@@ -1,7 +1,5 @@
-"use client";
-
-import { withAuth } from "@/components/withAuth";
-import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Link from "next/link";
 
 const features = [
@@ -22,8 +20,8 @@ const features = [
   },
 ];
 
-function HomePage() {
-  const { data: session } = useSession();
+export default async function HomePage() {
+  const session = await getServerSession(authOptions);
 
   if (session) {
     return (
@@ -78,5 +76,3 @@ function HomePage() {
     </div>
   );
 }
-
-export default HomePage;
