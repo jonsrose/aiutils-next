@@ -5,14 +5,15 @@ import Link from 'next/link';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import RecipeComponent from '@/components/RecipeComponent';
-import { Recipe } from '@/types';
 import { generateMarkdown } from '@/utils/markdownGenerator';
+import { useRecipe } from '@/hooks/useRecipe';
 
 interface RecipeDetailProps {
-  recipe: Recipe;
+  id: string;
 }
 
-export function RecipeDetail({ recipe }: RecipeDetailProps) {
+export function RecipeDetail({ id }: RecipeDetailProps) {
+  const { data: recipe } = useRecipe(id);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
@@ -45,6 +46,8 @@ export function RecipeDetail({ recipe }: RecipeDetailProps) {
         .catch(err => console.error('Failed to copy: ', err));
     }
   };
+
+  if (!recipe) return null;
 
   return (
     <div className="container mx-auto p-4 space-y-8">

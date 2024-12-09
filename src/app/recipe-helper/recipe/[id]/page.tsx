@@ -1,10 +1,9 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
-import { db } from '@/db';
-import { userRecipes } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
 import { RecipeDetail } from './RecipeDetail';
+import { fetchRecipe } from '@/hooks/useRecipe';
 import { notFound } from 'next/navigation';
 
 interface PageProps {
@@ -20,19 +19,21 @@ export default async function RecipePage({ params }: PageProps) {
     redirect("/signin");
   }
 
-  const recipe = await db.query.userRecipes.findFirst({
-    where: eq(userRecipes.id, parseInt(params.id)),
-  });
-
-  if (!recipe) {
+  const queryClient = new QueryClient();
+  
+  try {
+    // Prefetch the recipe data
+    await queryClient.prefetchQuery({
+      queryKey: ['recipe', params.id],
+      queryFn: () => fetchRecipe(params.id),
+    });
+  } catch (error) {
     notFound();
   }
 
-  // Spread the content with the base recipe
-  const fullRecipe = {
-    ...recipe,
-    ...recipe.content as any,
-  };
-
-  return <RecipeDetail recipe={fullRecipe} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <RecipeDetail id={params.id} />
+    </HydrationBoundary>
+  );
 }
