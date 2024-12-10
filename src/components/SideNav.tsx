@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { LockClosedIcon, SpeakerLoudIcon } from "@radix-ui/react-icons";
 import { FaUtensils } from "react-icons/fa";
+import { Settings } from "lucide-react";
 
 const routes = [
   {
@@ -18,10 +19,9 @@ const routes = [
     protected: true,
   },
   {
-    href: "/store-api-key",
-    name: "Store API Key",
-    icon: LockClosedIcon,
-    label: "Store API Key",
+    href: "/settings",
+    name: "Settings",
+    icon: Settings,
   },
   {
     href: "/speech-to-text",
