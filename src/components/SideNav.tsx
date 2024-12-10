@@ -42,8 +42,8 @@ export function SideNav({ isOpen, onOpenChange }: SideNavProps) {
 
   useEffect(() => {
     const pageContent = document.getElementById("page-content");
-    if (pageContent && !isTablet) {
-      pageContent.style.marginLeft = isOpen ? "256px" : "0";
+    if (pageContent) {
+      pageContent.style.marginLeft = (!isTablet && isOpen) ? "256px" : "0";
     }
   }, [isOpen, isTablet]);
 
