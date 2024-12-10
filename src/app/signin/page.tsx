@@ -23,7 +23,7 @@ export default async function SignInPage() {
   }, {} as Record<string, any>);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4">
+    <div className="h-full flex items-center justify-center p-4 bg-dot-pattern">
       <div className="max-w-md w-full space-y-6 bg-card rounded-lg shadow-lg p-6">
         <div className="text-center">
           <h2 className="text-2xl font-bold">Welcome to AI Utils</h2>
