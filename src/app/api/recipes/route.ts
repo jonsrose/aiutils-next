@@ -1,11 +1,24 @@
-import { NextResponse } from 'next/server';
-import { db } from '@/db';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { db } from "@/db";
+import { userRecipes } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
+
 export async function GET() {
-  try {
-    const recipes = await db.query.userRecipes.findMany();
-    return NextResponse.json(recipes);
-  } catch (error) {
-    console.error('Error fetching recipes:', error);
-    return NextResponse.json({ error: 'Failed to fetch recipes' }, { status: 500 });
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
+    return new NextResponse("Unauthorized", { status: 401 });
   }
+
+  const recipes = await db
+    .select({
+      id: userRecipes.id,
+      name: userRecipes.name,
+    })
+    .from(userRecipes)
+    .where(eq(userRecipes.userId, session.user.id));
+
+  return NextResponse.json(recipes);
 }

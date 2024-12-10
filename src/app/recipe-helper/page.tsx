@@ -3,9 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { RecipeList } from "./RecipeList";
-import { db } from "@/db";
-import { userRecipes } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default async function RecipeHelperPage() {
   const session = await getServerSession(authOptions);
@@ -13,15 +11,6 @@ export default async function RecipeHelperPage() {
   if (!session?.user?.id) {
     redirect("/signin");
   }
-
-  // Fetch recipes server-side
-  const recipes = await db
-    .select({
-      id: userRecipes.id,
-      name: userRecipes.name,
-    })
-    .from(userRecipes)
-    .where(eq(userRecipes.userId, session.user.id));
 
   return (
     <div className="container mx-auto p-4">
@@ -34,7 +23,7 @@ export default async function RecipeHelperPage() {
           Import New Recipe
         </Link>
       </div>
-      <RecipeList initialRecipes={recipes} />
+      <RecipeList />
     </div>
   );
 }
