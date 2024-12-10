@@ -25,7 +25,7 @@ export default async function HomePage() {
 
   if (session) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-8 flex-1">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-4xl font-bold mb-2">Welcome, {session.user?.name ?? "User"}!</h1>
           <p className="text-muted-foreground mb-8">Select a feature to get started with AI Utils</p>
@@ -48,8 +48,8 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div className="flex-1 flex items-center justify-center bg-background">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-6xl">
             Welcome to AI Utils

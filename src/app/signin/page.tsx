@@ -23,10 +23,10 @@ export default async function SignInPage() {
   }, {} as Record<string, any>);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="max-w-md w-full space-y-8 p-8 bg-card rounded-lg shadow-lg">
+    <div className="flex-1 flex items-center justify-center p-4">
+      <div className="max-w-md w-full space-y-6 bg-card rounded-lg shadow-lg p-6">
         <div className="text-center">
-          <h2 className="text-3xl font-bold">Welcome to AI Utils</h2>
+          <h2 className="text-2xl font-bold">Welcome to AI Utils</h2>
           <p className="mt-2 text-muted-foreground">Sign in to continue</p>
         </div>
         <SignInClient providers={providers} />

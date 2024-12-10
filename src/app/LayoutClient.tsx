@@ -29,14 +29,14 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
   const isSignInPage = pathname === '/signin';
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       {!isSignInPage && <SideNav isOpen={isOpen} onOpenChange={setIsOpen} />}
       <div
         id="page-content"
-        className="transition-[margin] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+        className="flex-1 transition-[margin] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
       >
-        <header className="h-16 border-b bg-background z-50 px-4">
-          <div className="flex items-center justify-between h-full">
+        <header className="h-16 border-b bg-background sticky top-0 z-50">
+          <div className="flex items-center justify-between h-full px-4">
             <div className="flex items-center">
               {!isSignInPage && (
                 <Button
@@ -72,7 +72,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
             )}
           </div>
         </header>
-        <main className="p-4">{children}</main>
+        <main className="flex-1">{children}</main>
       </div>
 
       <Dialog open={showSignOutModal} onOpenChange={setShowSignOutModal}>
@@ -99,6 +99,6 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
           </div>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }
