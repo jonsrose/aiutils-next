@@ -35,15 +35,15 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
         id="page-content"
         className="flex-1 h-full flex flex-col transition-[margin] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
       >
-        <header className="h-[60px] min-h-[60px] border-b bg-zinc-700 sticky top-0 z-50 isolate shadow-sm">
+        <header className="h-[60px] min-h-[60px] border-b bg-zinc-600 sticky top-0 z-50 isolate shadow-sm">
           <div className="flex items-center justify-between h-full px-4">
             <div className="flex items-center">
               {!isSignInPage && (
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="icon"
                   onClick={() => setIsOpen(!isOpen)}
-                  className="transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  className="transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] text-white hover:bg-white/10"
                   style={{
                     transform: isOpen ? "rotate(-90deg)" : "rotate(0deg)",
                   }}
@@ -51,13 +51,13 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
                   <Menu className="h-4 w-4" />
                 </Button>
               )}
-              <Link href="/" className="ml-4 font-semibold text-zinc-100 hover:opacity-80">
+              <Link href="/" className="ml-4 font-semibold text-white hover:text-white/90">
                 AI Utils
               </Link>
             </div>
             {session?.user?.name && (
               <DropdownMenu>
-                <DropdownMenuTrigger className="text-sm font-medium text-zinc-100 hover:opacity-80">
+                <DropdownMenuTrigger className="text-sm font-medium text-white hover:text-white/90">
                   {session.user.name}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
