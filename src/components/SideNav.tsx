@@ -59,41 +59,49 @@ export function SideNav({ isOpen, onOpenChange }: SideNavProps) {
   };
 
   return (
-    <Sheet open={isOpen} onOpenChange={handleOpenChange} modal={isTablet}>
-      <SheetContent
-        side="left"
-        className={cn(
-          "w-64 p-0 block border-0",
-          isTablet ? "pointer-events-auto" : "pointer-events-auto fixed"
-        )}
-        style={
-          !isTablet
-            ? { position: "fixed", left: 0, transform: "none" }
-            : undefined
-        }
-      >
-        <nav className="flex flex-col h-full p-4">
-          {routes.map((route) => (
-            <Link
-              key={route.href}
-              href={route.href}
-              onClick={handleLinkClick}
-              className={cn(
-                "px-2 py-1 mb-1 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-2",
-                pathname === route.href
-                  ? "bg-accent text-accent-foreground"
-                  : ""
-              )}
-            >
-              {route.icon && <route.icon className="h-4 w-4" />}
-              {route.name}
-            </Link>
-          ))}
-          <div className="mt-auto pt-4">
-            <ThemeToggle />
-          </div>
-        </nav>
-      </SheetContent>
-    </Sheet>
+    <>
+      {isTablet && isOpen && (
+        <div 
+          className="fixed inset-0 z-50 backdrop-blur-sm transition-all duration-100"
+          onClick={() => onOpenChange(false)}
+        />
+      )}
+      <Sheet open={isOpen} onOpenChange={handleOpenChange} modal={false}>
+        <SheetContent
+          side="left"
+          className={cn(
+            "w-64 p-0 border-r backdrop-blur-md bg-white/70 dark:bg-slate-900/70",
+            isTablet ? "pointer-events-auto" : "pointer-events-auto fixed"
+          )}
+          style={
+            !isTablet
+              ? { position: "fixed", left: 0, transform: "none" }
+              : undefined
+          }
+        >
+          <nav className="flex flex-col h-full p-4">
+            {routes.map((route) => (
+              <Link
+                key={route.href}
+                href={route.href}
+                onClick={handleLinkClick}
+                className={cn(
+                  "px-2 py-1 mb-1 rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors flex items-center gap-2",
+                  pathname === route.href
+                    ? "bg-black/10 dark:bg-white/10"
+                    : ""
+                )}
+              >
+                {route.icon && <route.icon className="h-4 w-4" />}
+                {route.name}
+              </Link>
+            ))}
+            <div className="mt-auto pt-4">
+              <ThemeToggle />
+            </div>
+          </nav>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
