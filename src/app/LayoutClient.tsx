@@ -35,7 +35,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
         id="page-content"
         className="flex-1 h-full flex flex-col transition-[margin] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
       >
-        <header className="h-[60px] min-h-[60px] border-b bg-secondary sticky top-0 z-50 isolate">
+        <header className="h-[60px] min-h-[60px] border-b bg-zinc-700 sticky top-0 z-50 isolate shadow-sm">
           <div className="flex items-center justify-between h-full px-4">
             <div className="flex items-center">
               {!isSignInPage && (
@@ -51,13 +51,13 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
                   <Menu className="h-4 w-4" />
                 </Button>
               )}
-              <Link href="/" className="ml-4 font-semibold hover:opacity-80">
+              <Link href="/" className="ml-4 font-semibold text-zinc-100 hover:opacity-80">
                 AI Utils
               </Link>
             </div>
             {session?.user?.name && (
               <DropdownMenu>
-                <DropdownMenuTrigger className="text-sm font-medium hover:opacity-80">
+                <DropdownMenuTrigger className="text-sm font-medium text-zinc-100 hover:opacity-80">
                   {session.user.name}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
