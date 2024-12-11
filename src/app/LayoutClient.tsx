@@ -35,7 +35,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
         id="page-content"
         className="flex-1 h-full flex flex-col transition-[margin] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
       >
-        <header className="h-16 border-b bg-secondary sticky top-0 z-50 isolate">
+        <header className="h-[60px] min-h-[60px] border-b bg-secondary sticky top-0 z-50 isolate">
           <div className="flex items-center justify-between h-full px-4">
             <div className="flex items-center">
               {!isSignInPage && (
@@ -73,7 +73,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         <div className="flex-1 bg-dot-pattern">
-          <main className="flex-1 flex flex-col min-h-[calc(100vh-4rem)]">{children}</main>
+          <main className="flex-1 flex flex-col min-h-[calc(100vh-60px)]">{children}</main>
         </div>
       </div>
 
