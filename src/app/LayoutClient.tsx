@@ -33,7 +33,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
       {!isSignInPage && <SideNav isOpen={isOpen} onOpenChange={setIsOpen} />}
       <div
         id="page-content"
-        className="flex-1 flex flex-col transition-[margin] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden"
+        className="flex-1 flex flex-col transition-[margin] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden overscroll-none"
       >
         <header className="h-[60px] min-h-[60px] border-b sticky top-0 z-50 isolate backdrop-blur-md bg-white/70 dark:bg-slate-900/70 shadow-sm">
           <div className="flex items-center justify-between h-full px-4">
@@ -72,7 +72,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
             )}
           </div>
         </header>
-        <main className="flex-1 bg-dot-pattern">{children}</main>
+        <main className="flex-1 bg-dot-pattern overscroll-none">{children}</main>
       </div>
 
       <Dialog open={showSignOutModal} onOpenChange={setShowSignOutModal}>
