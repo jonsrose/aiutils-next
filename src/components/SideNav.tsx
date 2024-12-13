@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useEffect } from "react";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { LockClosedIcon, SpeakerLoudIcon } from "@radix-ui/react-icons";
 import { FaUtensils } from "react-icons/fa";
@@ -96,9 +95,6 @@ export function SideNav({ isOpen, onOpenChange }: SideNavProps) {
                 {route.name}
               </Link>
             ))}
-            <div className="mt-auto pt-4">
-              <ThemeToggle />
-            </div>
           </nav>
         </SheetContent>
       </Sheet>
