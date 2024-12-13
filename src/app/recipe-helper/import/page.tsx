@@ -150,7 +150,7 @@ const RecipeImportPage = () => {
             disabled={isLoading}
             className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
           >
-            {isLoading ? "Refining..." : "Refine Recipe"}
+            {isLoading ? "Refining..." : "Import Recipe"}
           </button>
           <Link
             href="/recipe-helper"
