@@ -51,17 +51,9 @@ const RecipeImportPage = () => {
     }
   };
 
-  // const handleCopy = () => {
-  //   if (textareaRef.current) {
-  //     textareaRef.current.select();
-  //     document.execCommand('copy');
-  //     console.log('Copied to clipboard!');
-  //   }
-  // };
-
   const handleSaveRecipe = async () => {
     if (!recipe) return;
-    
+
     try {
       const response = await fetch("/api/save-recipe", {
         method: "POST",
@@ -73,7 +65,7 @@ const RecipeImportPage = () => {
 
       if (response.ok) {
         alert("Recipe saved successfully!");
-        router.push('/recipe-helper');
+        router.push("/recipe-helper");
       } else {
         const errorData = await response.json();
         alert(`Failed to save recipe: ${errorData.error}`);
@@ -90,6 +82,20 @@ const RecipeImportPage = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label
+            htmlFor="recipeUrl"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Recipe URL (Optional):
+          </label>
+          <input
+            id="recipeUrl"
+            value={recipeUrl}
+            onChange={(e) => setRecipeUrl(e.target.value)}
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+          />
+        </div>
+        <div>
+          <label
             htmlFor="recipeName"
             className="block text-sm font-medium text-gray-700"
           >
@@ -100,20 +106,6 @@ const RecipeImportPage = () => {
             value={recipeName}
             onChange={(e) => setRecipeName(e.target.value)}
             required
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="recipeUrl"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Recipe URL (Optional):
-          </label>
-          <input
-            id="recipeUrl"
-            value={recipeUrl}
-            onChange={(e) => setRecipeUrl(e.target.value)}
             className="mt-1 p-2 w-full border border-gray-300 rounded-md"
           />
         </div>
