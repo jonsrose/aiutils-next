@@ -6,11 +6,17 @@ import { cn } from "@/lib/utils";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useEffect } from "react";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { LockClosedIcon, SpeakerLoudIcon } from "@radix-ui/react-icons";
+import { SpeakerLoudIcon } from "@radix-ui/react-icons";
 import { FaUtensils } from "react-icons/fa";
-import { Settings } from "lucide-react";
+import { HomeIcon, Settings } from "lucide-react";
 
 const routes = [
+  {
+    href: "/",
+    name: "Home",
+    icon: HomeIcon,
+    protected: false,
+  },
   {
     href: "/recipe-helper",
     name: "Recipe Helper",
@@ -18,15 +24,15 @@ const routes = [
     protected: true,
   },
   {
-    href: "/settings",
-    name: "Settings",
-    icon: Settings,
-  },
-  {
     href: "/speech-to-text",
     name: "Speech to Text",
     icon: SpeakerLoudIcon,
     protected: true,
+  },
+  {
+    href: "/settings",
+    name: "Settings",
+    icon: Settings,
   },
 ];
 
@@ -42,7 +48,7 @@ export function SideNav({ isOpen, onOpenChange }: SideNavProps) {
   useEffect(() => {
     const pageContent = document.getElementById("page-content");
     if (pageContent) {
-      pageContent.style.marginLeft = (!isTablet && isOpen) ? "256px" : "0";
+      pageContent.style.marginLeft = !isTablet && isOpen ? "256px" : "0";
     }
   }, [isOpen, isTablet]);
 
@@ -60,7 +66,7 @@ export function SideNav({ isOpen, onOpenChange }: SideNavProps) {
   return (
     <>
       {isTablet && isOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-50 backdrop-blur-sm transition-all duration-100"
           onClick={() => onOpenChange(false)}
         />
@@ -86,9 +92,7 @@ export function SideNav({ isOpen, onOpenChange }: SideNavProps) {
                 onClick={handleLinkClick}
                 className={cn(
                   "px-2 py-1 mb-1 rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors flex items-center gap-2",
-                  pathname === route.href
-                    ? "bg-black/10 dark:bg-white/10"
-                    : ""
+                  pathname === route.href ? "bg-black/10 dark:bg-white/10" : ""
                 )}
               >
                 {route.icon && <route.icon className="h-4 w-4" />}
