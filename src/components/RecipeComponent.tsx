@@ -1,5 +1,6 @@
 import React from "react";
 import { Recipe } from "../types";
+import { cn } from "@/lib/utils";
 
 interface RecipeComponentProps {
   recipe: Recipe;
@@ -59,57 +60,36 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
     return [];
   };
 
-  // Helper to check if all siblings are checked
-  const areAllSiblingsChecked = (
-    id: string,
-    state: { [key: string]: boolean }
-  ): boolean => {
-    const siblings = getSiblingIds(id);
-    return (
-      siblings.length > 0 && siblings.every((siblingId) => state[siblingId])
-    );
-  };
-
   const toggleCheck = (id: string, childIds: string[] = []) => {
-    if (setCheckedItems) {
-      setCheckedItems((prev) => {
-        const newState = { ...prev };
-        const newValue = !prev[id];
+    if (!setCheckedItems || !checkedItems) return;
 
-        // Set the clicked item
-        newState[id] = newValue;
+    const newState = !checkedItems[id];
+    const updates: { [key: string]: boolean } = { [id]: newState };
 
-        // Set all child items to match parent
-        childIds.forEach((childId) => {
-          newState[childId] = newValue;
-        });
+    // Update child items
+    childIds.forEach((childId) => {
+      updates[childId] = newState;
+    });
 
-        if (newValue) {
-          // If we're checking an item, check upwards through parents
-          let currentId = id;
-          let parentId = getParentId(currentId);
+    // Update parent items
+    let currentId = id;
+    while (true) {
+      const parentId = getParentId(currentId);
+      if (!parentId) break;
 
-          while (parentId) {
-            if (areAllSiblingsChecked(currentId, newState)) {
-              newState[parentId] = true;
-              currentId = parentId;
-              parentId = getParentId(currentId);
-            } else {
-              break;
-            }
-          }
-        } else {
-          // If we're unchecking an item, uncheck all parents
-          let parentId = getParentId(id);
-          while (parentId) {
-            newState[parentId] = false;
-            parentId = getParentId(parentId);
-          }
-        }
+      const siblingIds = getSiblingIds(currentId);
+      const allSiblingsChecked = siblingIds.every(
+        (siblingId) =>
+          updates[siblingId] !== undefined
+            ? updates[siblingId]
+            : checkedItems[siblingId]
+      );
 
-        return newState;
-      });
+      updates[parentId] = allSiblingsChecked;
+      currentId = parentId;
     }
+
+    setCheckedItems((prev) => ({ ...prev, ...updates }));
   };
 
   const ChecklistItem: React.FC<{
@@ -118,7 +98,10 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
     childIds?: string[];
   }> = ({ id, children, childIds = [] }) => (
     <div
-      className="flex items-start cursor-pointer rounded p-1"
+      className={cn(
+        "flex items-start cursor-pointer rounded p-1",
+        isChecklist && checkedItems?.[id] && "bg-accent"
+      )}
       onClick={(e) => {
         e.preventDefault();
         toggleCheck(id, childIds);
@@ -136,11 +119,10 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
         </div>
       )}
       <div
-        className={`flex-1 ${
-          isChecklist && checkedItems?.[id]
-            ? "line-through italic text-gray-500"
-            : ""
-        }`}
+        className={cn(
+          "flex-1",
+          isChecklist && checkedItems?.[id] && "line-through italic text-muted-foreground"
+        )}
       >
         {children}
       </div>
@@ -226,7 +208,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-          <span className="inline-block w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-primary">
+          <span className="inline-block w-8 h-8 bg-accent rounded-full flex items-center justify-center text-primary">
             1
           </span>
           Ingredients
@@ -235,11 +217,12 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
           {recipe.ingredients.map((ingredient, index) => (
             <li
               key={index}
-              className={`text-lg ${
+              className={cn(
+                "text-lg",
                 isChecklist && checkedItems?.[`ingredient-${index}`]
-                  ? "bg-slate-100"
-                  : "hover:bg-slate-50"
-              }`}
+                  ? "bg-accent"
+                  : "hover:bg-accent/50"
+              )}
             >
               <ChecklistItem id={`ingredient-${index}`}>
                 <span className="font-medium">{ingredient.quantity}</span>{" "}
@@ -252,7 +235,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-          <span className="inline-block w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-primary">
+          <span className="inline-block w-8 h-8 bg-accent rounded-full flex items-center justify-center text-primary">
             2
           </span>
           Equipment
@@ -261,11 +244,12 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
           {recipe.equipment.map((item, index) => (
             <li
               key={index}
-              className={`text-lg ${
+              className={cn(
+                "text-lg",
                 isChecklist && checkedItems?.[`equipment-${index}`]
-                  ? "bg-slate-100"
-                  : "hover:bg-slate-50"
-              }`}
+                  ? "bg-accent"
+                  : "hover:bg-accent/50"
+              )}
             >
               <ChecklistItem id={`equipment-${index}`}>{item}</ChecklistItem>
             </li>
@@ -275,7 +259,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
 
       <section>
         <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-          <span className="inline-block w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-primary">
+          <span className="inline-block w-8 h-8 bg-accent rounded-full flex items-center justify-center text-primary">
             3
           </span>
           Steps
@@ -284,11 +268,12 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
           {recipe.steps.map((step, index) => (
             <li key={index} className="mb-6">
               <div
-                className={`rounded-lg ${
+                className={cn(
+                  "rounded-lg",
                   isChecklist && checkedItems?.[`step-${index}`]
-                    ? "bg-slate-100"
-                    : "hover:bg-slate-50"
-                }`}
+                    ? "bg-accent"
+                    : "hover:bg-accent/50"
+                )}
               >
                 <ChecklistItem
                   id={`step-${index}`}
@@ -313,12 +298,13 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
                     {step.substeps.map((substep, subIndex) => (
                       <li
                         key={subIndex}
-                        className={`bg-background rounded-md mb-2 pl-6 ${
+                        className={cn(
+                          "bg-background rounded-md mb-2 pl-6",
                           isChecklist &&
-                          checkedItems?.[`step-${index}-substep-${subIndex}`]
-                            ? "bg-slate-100"
-                            : "hover:bg-slate-50"
-                        }`}
+                            checkedItems?.[`step-${index}-substep-${subIndex}`]
+                              ? "bg-accent"
+                              : "hover:bg-accent/50"
+                        )}
                       >
                         <ChecklistItem
                           id={`step-${index}-substep-${subIndex}`}
@@ -339,14 +325,15 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
                                 (ingredient, ingIndex) => (
                                   <li
                                     key={ingIndex}
-                                    className={`pl-6 ${
+                                    className={cn(
+                                      "pl-6",
                                       isChecklist &&
-                                      checkedItems?.[
-                                        `step-${index}-substep-${subIndex}-ingredient-${ingIndex}`
-                                      ]
-                                        ? "bg-slate-100"
-                                        : "hover:bg-slate-50"
-                                    }`}
+                                        checkedItems?.[
+                                          `step-${index}-substep-${subIndex}-ingredient-${ingIndex}`
+                                        ]
+                                          ? "bg-accent"
+                                          : "hover:bg-accent/50"
+                                    )}
                                   >
                                     <ChecklistItem
                                       id={`step-${index}-substep-${subIndex}-ingredient-${ingIndex}`}
