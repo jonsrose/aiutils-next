@@ -2,17 +2,37 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import RecipeComponent from '@/components/RecipeComponent';
 import { generateMarkdown } from '@/utils/markdownGenerator';
 import { useRecipe } from '@/hooks/useRecipe';
+import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 interface RecipeDetailProps {
   id: string;
 }
 
+async function deleteRecipe(id: string): Promise<void> {
+  const response = await fetch(`/api/recipes/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    throw new Error('Failed to delete recipe');
+  }
+}
+
 export function RecipeDetail({ id }: RecipeDetailProps) {
+  const router = useRouter();
   const { data: recipe } = useRecipe(id);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
@@ -20,6 +40,7 @@ export function RecipeDetail({ id }: RecipeDetailProps) {
   const [isChecklist, setIsChecklist] = useState(true);
   const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
   const [showTimingOptions, setShowTimingOptions] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const effectiveStartTime = useMemo(() => {
     if (startTime) {
@@ -47,12 +68,32 @@ export function RecipeDetail({ id }: RecipeDetailProps) {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await deleteRecipe(id);
+      router.push('/recipe-helper');
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+      alert('Failed to delete recipe');
+    }
+  };
+
   if (!recipe) return null;
 
   return (
     <div className="container mx-auto p-4 space-y-8">
       <div className="max-w-3xl mx-auto bg-card rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Recipe Settings</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-semibold">Recipe Settings</h2>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={() => setShowDeleteDialog(true)}
+          >
+            <Trash2 className="h-5 w-5" />
+          </Button>
+        </div>
         
         <div className="space-y-6">
           <div className="p-4 bg-muted rounded-lg">
@@ -176,6 +217,31 @@ export function RecipeDetail({ id }: RecipeDetailProps) {
           <span className="mr-2">←</span> Back to Recipe Helper
         </Link>
       </div>
+
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Recipe</DialogTitle>
+          </DialogHeader>
+          <p>
+            Are you sure you want to delete &quot;{recipe.name}&quot;? This action cannot be undone.
+          </p>
+          <DialogFooter className="flex gap-2 justify-end">
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 } 
