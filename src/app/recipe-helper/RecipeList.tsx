@@ -101,7 +101,7 @@ export function RecipeList() {
             <DialogTitle>Delete Recipe</DialogTitle>
           </DialogHeader>
           <p>
-            Are you sure you want to delete "{recipeToDelete?.name}"? This action cannot be undone.
+            Are you sure you want to delete &quot;{recipeToDelete?.name}&quot;? This action cannot be undone.
           </p>
           <DialogFooter className="flex gap-2 justify-end">
             <Button
