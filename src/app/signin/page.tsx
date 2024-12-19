@@ -3,6 +3,14 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { SignInClient } from "./SignInClient";
 
+type Provider = {
+  id: string;
+  name: string;
+  type: string;
+  signinUrl: string;
+  callbackUrl: string;
+};
+
 export default async function SignInPage() {
   const session = await getServerSession(authOptions);
 
@@ -12,15 +20,15 @@ export default async function SignInPage() {
 
   // Get providers from authOptions directly
   const providers = authOptions.providers.reduce((acc, provider) => {
-    acc[provider.id] = {
-      id: provider.id,
-      name: provider.name ?? provider.id,
-      type: provider.type,
-      signinUrl: `/api/auth/signin/${provider.id}`,
-      callbackUrl: `/api/auth/callback/${provider.id}`,
+    acc[provider.id as string] = {
+      id: provider.id as string,
+      name: (provider.name as string) ?? (provider.id as string),
+      type: provider.type as string,
+      signinUrl: `/api/auth/signin/${provider.id as string}`,
+      callbackUrl: `/api/auth/callback/${provider.id as string}`,
     };
     return acc;
-  }, {} as Record<string, any>);
+  }, {} as Record<string, Provider>);
 
   return (
     <div className="h-full flex items-center justify-center p-4">

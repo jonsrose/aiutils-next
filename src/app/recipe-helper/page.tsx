@@ -3,7 +3,6 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { RecipeList } from "./RecipeList";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default async function RecipeHelperPage() {
   const session = await getServerSession(authOptions);

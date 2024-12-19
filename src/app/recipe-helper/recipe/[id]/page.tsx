@@ -27,7 +27,7 @@ export default async function RecipePage({ params }: PageProps) {
       queryKey: ['recipe', params.id],
       queryFn: () => fetchRecipe(params.id),
     });
-  } catch (error) {
+  } catch {
     notFound();
   }
 
