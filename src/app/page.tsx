@@ -34,10 +34,14 @@ export default async function HomePage() {
       <div className="container mx-auto p-4 sm:p-8 flex-1">
         <div className="max-w-5xl mx-auto space-y-8">
           <div className="space-y-2">
-            <h1 className="text-4xl font-bold">Welcome, {session.user?.name ?? "User"}!</h1>
-            <p className="text-muted-foreground text-lg">Select a feature to get started with AI Utils</p>
+            <h1 className="text-4xl font-bold">
+              Welcome, {session.user?.name ?? "User"}!
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Select a feature to get started with AI Utils
+            </p>
           </div>
-          
+
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature) => (
               <Link
