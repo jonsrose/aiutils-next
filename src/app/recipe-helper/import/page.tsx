@@ -7,6 +7,7 @@ import { Recipe } from "@/types";
 import RecipeComponent from "@/components/RecipeComponent";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { withAuth } from "@/components/withAuth";
 
 const RecipeImportPage = () => {
   const router = useRouter();
@@ -253,4 +254,4 @@ const RecipeImportPage = () => {
   );
 };
 
-export default RecipeImportPage;
+export default withAuth(RecipeImportPage);
