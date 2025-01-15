@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { SideNav } from "@/components/SideNav";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import {
   Dialog,
@@ -24,13 +23,10 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [showSignOutModal, setShowSignOutModal] = useState(false);
   const { data: session } = useSession();
-  const pathname = usePathname();
-
-  const isSignInPage = pathname === '/signin';
 
   return (
     <div className="h-screen flex flex-col">
-      {!isSignInPage && <SideNav isOpen={isOpen} onOpenChange={setIsOpen} />}
+      <SideNav isOpen={isOpen} onOpenChange={setIsOpen} />
       <div
         id="page-content"
         className="flex-1 flex flex-col transition-[margin] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden"
@@ -38,7 +34,6 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
         <header className="h-[60px] min-h-[60px] border-b sticky top-0 z-50 isolate backdrop-blur-md bg-white/70 dark:bg-slate-900/70 shadow-sm">
           <div className="flex items-center justify-between h-full px-4">
             <div className="flex items-center">
-              {!isSignInPage && (
                 <Button
                   variant="ghost"
                   size="icon"
@@ -50,7 +45,6 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
                 >
                   <Menu className="h-4 w-4" />
                 </Button>
-              )}
               <Link href="/" className="ml-4 font-semibold hover:opacity-80">
                 AI Utils
               </Link>
