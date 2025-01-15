@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
@@ -43,17 +43,13 @@ export function SettingsForm() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="bg-card rounded-lg border p-4">
+    <>
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-xl font-semibold mb-4">OpenAI API Key</h2>
         <form onSubmit={handleStoreApiKey}>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label
-                className="text-lg font-semibold mb-4"
-                 htmlFor="openai-api-key"
-              >
-                OpenAI API Key
-              </Label>
+              <Label htmlFor="openai-api-key">API Key</Label>
               <div className="relative">
                 <Input
                   id="openai-api-key"
@@ -89,8 +85,8 @@ export function SettingsForm() {
       </div>
 
       {mounted && (
-        <div className="bg-card rounded-lg border p-4">
-          <h3 className="text-lg font-semibold mb-4">Theme Settings</h3>
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold mb-4">Theme Settings</h2>
           <RadioGroup
             value={theme}
             onValueChange={setTheme}
@@ -111,6 +107,6 @@ export function SettingsForm() {
           </RadioGroup>
         </div>
       )}
-    </div>
+    </>
   );
-} 
+}

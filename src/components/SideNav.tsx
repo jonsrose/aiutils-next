@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { SpeakerLoudIcon } from "@radix-ui/react-icons";
 import { FaUtensils } from "react-icons/fa";
-import { HomeIcon, Settings } from "lucide-react";
+import { HomeIcon, Settings, HelpCircle } from "lucide-react";
 
 const routes = [
   {
@@ -33,6 +33,12 @@ const routes = [
     href: "/settings",
     name: "Settings",
     icon: Settings,
+  },
+  {
+    href: "/help",
+    name: "Help",
+    icon: HelpCircle,
+    protected: false,
   },
 ];
 

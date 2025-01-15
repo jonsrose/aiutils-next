@@ -3,7 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Link from "next/link";
 import { FaUtensils } from "react-icons/fa";
 import { SpeakerLoudIcon } from "@radix-ui/react-icons";
-import { KeyRound } from "lucide-react";
+import { KeyRound, HelpCircle } from "lucide-react";
 
 const features = [
   {
@@ -23,6 +23,12 @@ const features = [
     label: "Settings",
     description: "Configure your API keys and preferences",
     icon: KeyRound,
+  },
+  {
+    href: "/help",
+    label: "Help & Getting Started",
+    description: "Learn how to use AI Utils and get started",
+    icon: HelpCircle,
   },
 ];
 
