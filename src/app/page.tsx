@@ -92,7 +92,7 @@ export default async function HomePage() {
             Sign in
           </Link>
           <Link
-            href="/about"
+            href="/help"
             className="text-lg font-semibold text-primary hover:text-primary/80 transition-colors"
           >
             Learn more <span aria-hidden="true">→</span>

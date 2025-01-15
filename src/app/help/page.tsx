@@ -2,7 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { withAuth } from "@/components/withAuth";
 
 function HelpPage() {
   return (
@@ -127,4 +126,4 @@ function HelpPage() {
   );
 }
 
-export default withAuth(HelpPage);
+export default HelpPage;
