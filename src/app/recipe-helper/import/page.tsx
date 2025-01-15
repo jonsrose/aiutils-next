@@ -42,6 +42,7 @@ const RecipeImportPage = () => {
       }
 
       const data = await response.json();
+      console.log("Recipe data received:", data.recipe);
       setRecipe(data.recipe);
     } catch (error) {
       console.error(error);
@@ -162,16 +163,16 @@ const RecipeImportPage = () => {
       </form>
 
       {recipe && (
-        <div className="mt-6 p-6 rounded-lg shadow-md max-h-[300px] overflow-y-auto">
+        <div className="mt-6 p-6 rounded-lg shadow-md max-h-[300px] overflow-y-auto bg-white">
           <RecipeComponent recipe={recipe} effectiveStartTime={null} />
         </div>
       )}
 
       {recipe && (
-        <div className="mt-6">
+        <div className="mt-6 mb-6">
           <button
             onClick={handleSaveRecipe}
-            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 w-full md:w-auto"
           >
             Save Recipe
           </button>
