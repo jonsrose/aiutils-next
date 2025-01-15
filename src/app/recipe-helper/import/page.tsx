@@ -106,87 +106,101 @@ const RecipeImportPage = () => {
       </div>
 
       {currentStep === 1 && (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="recipeUrl"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Recipe URL (Optional):
-            </label>
-            <input
-              id="recipeUrl"
-              value={recipeUrl}
-              onChange={(e) => setRecipeUrl(e.target.value)}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="recipeName"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Recipe Name:
-            </label>
-            <input
-              id="recipeName"
-              value={recipeName}
-              onChange={(e) => setRecipeName(e.target.value)}
-              required
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="rawRecipe"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Paste Your Recipe:
-            </label>
-            <textarea
-              id="rawRecipe"
-              value={rawRecipe}
-              onChange={(e) => setRawRecipe(e.target.value)}
-              required
-              rows={6}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-              placeholder="Please paste your complete recipe here, including both the ingredients list and cooking steps..."
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="model"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Select GPT Model:
-            </label>
-            <select
-              id="model"
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-            >
-              <option value="gpt-3.5-turbo">GPT-3.5-Turbo</option>
-              <option value="gpt-4">GPT-4</option>
-              <option value="gpt-4-turbo">GPT-4-Turbo</option>
-            </select>
-          </div>
-          <div className="flex gap-4">
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex-1"
-            >
-              {isLoading ? "Processing..." : "Import"}
-            </button>
-            <Link
-              href="/recipe-helper"
-              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 text-center flex-1"
-            >
-              Cancel
-            </Link>
-          </div>
-        </form>
+        <>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="recipeUrl"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Recipe URL (Optional):
+              </label>
+              <input
+                id="recipeUrl"
+                value={recipeUrl}
+                onChange={(e) => setRecipeUrl(e.target.value)}
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="recipeName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Recipe Name:
+              </label>
+              <input
+                id="recipeName"
+                value={recipeName}
+                onChange={(e) => setRecipeName(e.target.value)}
+                required
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="rawRecipe"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Paste Your Recipe:
+              </label>
+              <textarea
+                id="rawRecipe"
+                value={rawRecipe}
+                onChange={(e) => setRawRecipe(e.target.value)}
+                required
+                rows={6}
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                placeholder="Please paste your complete recipe here, including both the ingredients list and cooking steps..."
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="model"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Select GPT Model:
+              </label>
+              <select
+                id="model"
+                value={model}
+                onChange={(e) => setModel(e.target.value)}
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+              >
+                <option value="gpt-3.5-turbo">GPT-3.5-Turbo</option>
+                <option value="gpt-4">GPT-4</option>
+                <option value="gpt-4-turbo">GPT-4-Turbo</option>
+              </select>
+            </div>
+            <div className="flex gap-4">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex-1"
+              >
+                {isLoading ? "Processing..." : "Import"}
+              </button>
+              <Link
+                href="/recipe-helper"
+                className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 text-center flex-1"
+              >
+                Cancel
+              </Link>
+            </div>
+          </form>
+
+          {isLoading && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-lg shadow-xl text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                <p className="text-gray-700">Importing your recipe...</p>
+                <p className="text-sm text-gray-500 mt-2">
+                  This may take a few moments
+                </p>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {currentStep === 2 && recipe && (
