@@ -10,17 +10,19 @@ function HelpPage() {
 
       <div className="space-y-8 max-w-3xl">
         {/* Step 1 */}
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
           <div className="flex items-center mb-4">
             <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">
               1
             </div>
-            <h2 className="text-xl font-semibold">Create an Account</h2>
+            <h2 className="text-xl font-semibold dark:text-white">
+              Create an Account
+            </h2>
           </div>
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
             Start by creating an account or signing in:
           </p>
-          <ul className="list-disc list-inside space-y-2 text-gray-600 ml-4">
+          <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 ml-4">
             <li>Click the Sign In button on the homepage</li>
             <li>Choose your preferred authentication method</li>
             <li>Complete the authentication process</li>
@@ -36,20 +38,20 @@ function HelpPage() {
         </div>
 
         {/* Step 2 */}
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
           <div className="flex items-center mb-4">
             <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">
               2
             </div>
-            <h2 className="text-xl font-semibold">
+            <h2 className="text-xl font-semibold dark:text-white">
               Set Up Your OpenAI API Key
             </h2>
           </div>
-          <p className="text-gray-600 mb-4">
-            To use our AI-powered features, you'll need an OpenAI API key:
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
+            To use our AI-powered features, you&apos;ll need an OpenAI API key:
           </p>
-          <ul className="list-disc list-inside space-y-2 text-gray-600 ml-4">
-            <li>Get your API key from OpenAI's website</li>
+          <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 ml-4">
+            <li>Get your API key from OpenAI&apos;s website</li>
             <li>Go to Settings in AI Utils</li>
             <li>Enter and save your API key (it will be securely encrypted)</li>
           </ul>
@@ -64,48 +66,54 @@ function HelpPage() {
         </div>
 
         {/* Step 3 */}
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
           <div className="flex items-center mb-4">
             <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">
               3
             </div>
-            <h2 className="text-xl font-semibold">Start Using Features</h2>
+            <h2 className="text-xl font-semibold dark:text-white">
+              Start Using Features
+            </h2>
           </div>
-          <p className="text-gray-600 mb-4">
-            You're now ready to use our AI-powered features:
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
+            You&apos;re now ready to use our AI-powered features:
           </p>
           <div className="space-y-4">
-            <div className="border rounded-lg p-4">
-              <h3 className="font-medium mb-2">Recipe Helper</h3>
-              <p className="text-gray-600 mb-2">
+            <div className="border dark:border-gray-700 rounded-lg p-4">
+              <h3 className="font-medium mb-2 dark:text-white">
+                Recipe Helper
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-2">
                 Import and organize your recipes with AI assistance:
               </p>
-              <ul className="list-disc list-inside space-y-1 text-gray-600 ml-4">
+              <ul className="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-300 ml-4">
                 <li>Import recipes from URLs or text</li>
                 <li>AI will structure and format your recipes</li>
                 <li>Save and manage your recipe collection</li>
               </ul>
               <Link
                 href="/recipe-helper"
-                className="text-blue-500 hover:text-blue-600 font-medium block mt-3"
+                className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-medium block mt-3"
               >
                 Try Recipe Helper →
               </Link>
             </div>
 
-            <div className="border rounded-lg p-4">
-              <h3 className="font-medium mb-2">Speech to Text</h3>
-              <p className="text-gray-600 mb-2">
+            <div className="border dark:border-gray-700 rounded-lg p-4">
+              <h3 className="font-medium mb-2 dark:text-white">
+                Speech to Text
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-2">
                 Convert audio recordings to text:
               </p>
-              <ul className="list-disc list-inside space-y-1 text-gray-600 ml-4">
+              <ul className="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-300 ml-4">
                 <li>Upload audio files (MP3, WAV, M4A, AAC)</li>
                 <li>Get accurate text transcriptions</li>
                 <li>Copy and use the transcribed text</li>
               </ul>
               <Link
                 href="/speech-to-text"
-                className="text-blue-500 hover:text-blue-600 font-medium block mt-3"
+                className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-medium block mt-3"
               >
                 Try Speech to Text →
               </Link>
@@ -114,9 +122,11 @@ function HelpPage() {
         </div>
 
         {/* Need Help? */}
-        <div className="bg-gray-50 rounded-lg p-6 border">
-          <h2 className="text-lg font-semibold mb-2">Need Help?</h2>
-          <p className="text-gray-600">
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border dark:border-gray-700">
+          <h2 className="text-lg font-semibold mb-2 dark:text-white">
+            Need Help?
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300">
             If you need assistance or have questions, check out our
             documentation or contact support.
           </p>

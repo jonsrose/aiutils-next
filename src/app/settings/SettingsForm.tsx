@@ -44,8 +44,10 @@ export function SettingsForm() {
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4">OpenAI API Key</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 className="text-xl font-semibold mb-4 dark:text-white">
+          OpenAI API Key
+        </h2>
         <form onSubmit={handleStoreApiKey}>
           <div className="space-y-4">
             <div className="space-y-2">
@@ -85,8 +87,10 @@ export function SettingsForm() {
       </div>
 
       {mounted && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">Theme Settings</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold mb-4 dark:text-white">
+            Theme Settings
+          </h2>
           <RadioGroup
             value={theme}
             onValueChange={setTheme}
