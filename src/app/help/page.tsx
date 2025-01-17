@@ -5,7 +5,7 @@ import Link from "next/link";
 
 function HelpPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 mb-16">
       <h1 className="text-3xl font-bold mb-6">Getting Started with AI Utils</h1>
 
       <div className="space-y-8 max-w-3xl">
