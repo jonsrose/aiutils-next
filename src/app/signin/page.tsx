@@ -32,17 +32,12 @@ export default async function SignInPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Sign In</h1>
       <div className="max-w-md space-y-6">
+        <h1 className="text-3xl font-bold">Welcome to AI Utils</h1>
+        <p className="text-muted-foreground dark:text-gray-300">
+          Choose your sign in method to get started
+        </p>
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <div className="text-center mb-6">
-            <h2 className="text-xl font-semibold dark:text-white">
-              Welcome to AI Utils
-            </h2>
-            <p className="mt-2 text-muted-foreground dark:text-gray-300">
-              Sign in to continue
-            </p>
-          </div>
           <SignInClient providers={providers} />
         </div>
       </div>
