@@ -2,13 +2,14 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Recipe } from "@/types";
 import RecipeComponent from "@/components/RecipeComponent";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { withAuth } from "@/components/withAuth";
 import { useQueryClient } from "@tanstack/react-query";
+import debounce from "lodash/debounce";
 
 const RecipeImportPage = () => {
   const router = useRouter();
@@ -26,6 +27,13 @@ const RecipeImportPage = () => {
     totalTokens?: number;
     costInCents?: number;
   } | null>(null);
+  const [showUrlModal, setShowUrlModal] = useState(false);
+  const [urlContent, setUrlContent] = useState<{
+    title: string;
+    content: string;
+  } | null>(null);
+  const [isUrlFetching, setIsUrlFetching] = useState(false);
+  const [lastFetchedUrl, setLastFetchedUrl] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,6 +103,75 @@ const RecipeImportPage = () => {
     setRecipe(null);
   };
 
+  const fetchUrlContent = async (url: string) => {
+    if (!url || url === lastFetchedUrl || !isValidUrl(url)) return;
+
+    setIsUrlFetching(true);
+    try {
+      const response = await fetch("/api/fetch-recipe-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch URL content");
+
+      const data = await response.json();
+      setUrlContent(data);
+      setLastFetchedUrl(url);
+      setShowUrlModal(true);
+    } catch (error) {
+      console.error("Error fetching URL content:", error);
+    } finally {
+      setIsUrlFetching(false);
+    }
+  };
+
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  // Debounced version of fetchUrlContent
+  const debouncedFetchUrl = useCallback(
+    debounce((url: string) => fetchUrlContent(url), 500),
+    []
+  );
+
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value;
+    setRecipeUrl(url);
+
+    if (!recipeName && !rawRecipe) {
+      debouncedFetchUrl(url);
+    }
+  };
+
+  const handleUrlPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const url = e.clipboardData.getData("text");
+    if (!recipeName && !rawRecipe) {
+      fetchUrlContent(url);
+    }
+  };
+
+  const handleUrlBlur = () => {
+    if (recipeUrl && !recipeName && !rawRecipe) {
+      fetchUrlContent(recipeUrl);
+    }
+  };
+
+  const handleImportConfirm = () => {
+    if (urlContent) {
+      setRecipeName(urlContent.title);
+      setRawRecipe(urlContent.content);
+    }
+    setShowUrlModal(false);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Recipe Import</h1>
@@ -130,9 +207,17 @@ const RecipeImportPage = () => {
               <input
                 id="recipeUrl"
                 value={recipeUrl}
-                onChange={(e) => setRecipeUrl(e.target.value)}
+                onChange={handleUrlChange}
+                onPaste={handleUrlPaste}
+                onBlur={handleUrlBlur}
                 className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                placeholder="https://example.com/recipe"
               />
+              {isUrlFetching && (
+                <p className="text-sm text-gray-500 mt-1">
+                  Fetching content...
+                </p>
+              )}
             </div>
             <div>
               <label
@@ -200,6 +285,34 @@ const RecipeImportPage = () => {
               </Link>
             </div>
           </form>
+
+          {/* URL Import Modal */}
+          {showUrlModal && urlContent && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+                <h3 className="text-lg font-semibold mb-4">
+                  Import Recipe Content?
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Would you like to import content from this URL?
+                </p>
+                <div className="flex justify-end gap-4">
+                  <button
+                    onClick={() => setShowUrlModal(false)}
+                    className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleImportConfirm}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                  >
+                    Import
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {isLoading && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
