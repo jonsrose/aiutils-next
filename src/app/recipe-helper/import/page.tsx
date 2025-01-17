@@ -217,34 +217,48 @@ const RecipeImportPage = () => {
 
       {currentStep === 2 && recipe && (
         <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow-md p-6 max-h-[60vh] overflow-y-auto">
-            <h2 className="text-xl font-semibold mb-4">Review Your Recipe</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 max-h-[60vh] overflow-y-auto">
+            <h2 className="text-xl font-semibold mb-4 dark:text-white">
+              Review Your Recipe
+            </h2>
             <RecipeComponent recipe={recipe} effectiveStartTime={null} />
           </div>
 
           {usage && (
-            <div className="bg-white rounded-lg shadow-md p-4">
-              <h3 className="text-sm font-medium text-gray-700 mb-2">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+              <h3 className="text-sm font-medium text-gray-700 dark:text-white mb-2">
                 API Usage Information
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-600">Prompt Tokens:</span>
-                  <span className="ml-2 font-medium">{usage.promptTokens}</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Prompt Tokens:
+                  </span>
+                  <span className="ml-2 font-medium dark:text-white">
+                    {usage.promptTokens}
+                  </span>
                 </div>
                 <div>
-                  <span className="text-gray-600">Completion Tokens:</span>
-                  <span className="ml-2 font-medium">
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Completion Tokens:
+                  </span>
+                  <span className="ml-2 font-medium dark:text-white">
                     {usage.completionTokens}
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-600">Total Tokens:</span>
-                  <span className="ml-2 font-medium">{usage.totalTokens}</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Total Tokens:
+                  </span>
+                  <span className="ml-2 font-medium dark:text-white">
+                    {usage.totalTokens}
+                  </span>
                 </div>
                 <div>
-                  <span className="text-gray-600">Cost:</span>
-                  <span className="ml-2 font-medium">
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Cost:
+                  </span>
+                  <span className="ml-2 font-medium dark:text-white">
                     ${((usage.costInCents ?? 0) / 100).toFixed(4)}
                   </span>
                 </div>
