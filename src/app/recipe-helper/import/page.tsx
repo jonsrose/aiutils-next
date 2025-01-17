@@ -225,40 +225,40 @@ const RecipeImportPage = () => {
           </div>
 
           {usage && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
-              <h3 className="text-sm font-medium text-gray-700 dark:text-white mb-2">
-                API Usage Information
+            <div className="text-xs border dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-800/50">
+              <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-2">
+                API Usage
               </h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Prompt Tokens:
+                  <span className="text-gray-500 dark:text-gray-400">
+                    Prompt:
                   </span>
-                  <span className="ml-2 font-medium dark:text-white">
-                    {usage.promptTokens}
+                  <span className="ml-1 text-gray-700 dark:text-gray-300">
+                    {usage.promptTokens} tokens
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Completion Tokens:
+                  <span className="text-gray-500 dark:text-gray-400">
+                    Completion:
                   </span>
-                  <span className="ml-2 font-medium dark:text-white">
-                    {usage.completionTokens}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Total Tokens:
-                  </span>
-                  <span className="ml-2 font-medium dark:text-white">
-                    {usage.totalTokens}
+                  <span className="ml-1 text-gray-700 dark:text-gray-300">
+                    {usage.completionTokens} tokens
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">
+                  <span className="text-gray-500 dark:text-gray-400">
+                    Total:
+                  </span>
+                  <span className="ml-1 text-gray-700 dark:text-gray-300">
+                    {usage.totalTokens} tokens
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-500 dark:text-gray-400">
                     Cost:
                   </span>
-                  <span className="ml-2 font-medium dark:text-white">
+                  <span className="ml-1 text-gray-700 dark:text-gray-300">
                     ${((usage.costInCents ?? 0) / 100).toFixed(4)}
                   </span>
                 </div>

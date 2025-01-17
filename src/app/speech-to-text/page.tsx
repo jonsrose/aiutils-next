@@ -157,24 +157,24 @@ function SpeechToTextPage() {
           </div>
 
           {usage && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
-              <h3 className="text-sm font-medium mb-2 dark:text-white">
-                API Usage Information
+            <div className="text-xs border dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-800/50">
+              <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-2">
+                API Usage
               </h3>
-              <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">
+                  <span className="text-gray-500 dark:text-gray-400">
                     Duration:
                   </span>
-                  <span className="ml-2 font-medium dark:text-white">
+                  <span className="ml-1 text-gray-700 dark:text-gray-300">
                     {usage.durationInMinutes?.toFixed(2)} minutes
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">
+                  <span className="text-gray-500 dark:text-gray-400">
                     Cost:
                   </span>
-                  <span className="ml-2 font-medium dark:text-white">
+                  <span className="ml-1 text-gray-700 dark:text-gray-300">
                     ${((usage.costInCents ?? 0) / 100).toFixed(4)}
                   </span>
                 </div>
