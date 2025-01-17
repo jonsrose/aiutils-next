@@ -23,6 +23,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface RecipeDetailProps {
   id: string;
@@ -39,6 +40,7 @@ async function deleteRecipe(id: string): Promise<void> {
 
 export function RecipeDetail({ id }: RecipeDetailProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: recipe } = useRecipe(id);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
@@ -85,6 +87,7 @@ export function RecipeDetail({ id }: RecipeDetailProps) {
   const handleDelete = async () => {
     try {
       await deleteRecipe(id);
+      await queryClient.invalidateQueries({ queryKey: ["recipes"] });
       router.push("/recipe-helper");
     } catch (error) {
       console.error("Error deleting recipe:", error);
