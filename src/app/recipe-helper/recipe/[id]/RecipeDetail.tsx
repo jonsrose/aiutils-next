@@ -98,7 +98,7 @@ export function RecipeDetail({ id }: RecipeDetailProps) {
   if (!recipe) return null;
 
   return (
-    <div className="container mx-auto p-4 space-y-8">
+    <div className="container mx-auto p-4 space-y-8 mb-16">
       <div className="flex items-center justify-between mb-4">
         <Link
           href="/recipe-helper"
