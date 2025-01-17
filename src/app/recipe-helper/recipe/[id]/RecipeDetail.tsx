@@ -9,7 +9,13 @@ import RecipeComponent from "@/components/RecipeComponent";
 import { generateMarkdown } from "@/utils/markdownGenerator";
 import { useRecipe } from "@/hooks/useRecipe";
 import { Button } from "@/components/ui/button";
-import { Trash2, Settings2, ArrowLeft } from "lucide-react";
+import {
+  Trash2,
+  Settings2,
+  ArrowLeft,
+  ClipboardCopy,
+  RefreshCw,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -101,8 +107,30 @@ export function RecipeDetail({ id }: RecipeDetailProps) {
           <Button
             variant="outline"
             size="icon"
+            onClick={copyToClipboard}
+            className="hover:bg-primary/10"
+            title="Copy to Clipboard"
+          >
+            <ClipboardCopy className="h-4 w-4" />
+          </Button>
+          {isChecklist && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={clearChecklist}
+              disabled={!hasCheckedItems}
+              className="hover:bg-primary/10"
+              title="Clear Checklist"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+          )}
+          <Button
+            variant="outline"
+            size="icon"
             onClick={() => setShowSettingsDialog(true)}
             className="hover:bg-primary/10"
+            title="Settings"
           >
             <Settings2 className="h-4 w-4" />
           </Button>
@@ -111,6 +139,7 @@ export function RecipeDetail({ id }: RecipeDetailProps) {
             size="icon"
             className="text-destructive hover:text-destructive hover:bg-destructive/10"
             onClick={() => setShowDeleteDialog(true)}
+            title="Delete Recipe"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -209,31 +238,6 @@ export function RecipeDetail({ id }: RecipeDetailProps) {
                 <label htmlFor="isChecklist" className="text-sm font-medium">
                   Show as checklist
                 </label>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="font-medium">Actions</h3>
-              <div className="flex gap-2">
-                <Button
-                  className="flex-1"
-                  onClick={() => {
-                    copyToClipboard();
-                    setShowSettingsDialog(false);
-                  }}
-                >
-                  Copy to Clipboard
-                </Button>
-                {isChecklist && (
-                  <Button
-                    variant="destructive"
-                    onClick={clearChecklist}
-                    disabled={!hasCheckedItems}
-                    className="flex-1"
-                  >
-                    Clear Checklist
-                  </Button>
-                )}
               </div>
             </div>
           </div>
