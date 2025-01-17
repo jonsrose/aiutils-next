@@ -20,11 +20,18 @@ const RecipeImportPage = () => {
   const [model, setModel] = useState("gpt-4-turbo");
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [usage, setUsage] = useState<{
+    promptTokens?: number;
+    completionTokens?: number;
+    totalTokens?: number;
+    costInCents?: number;
+  } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setRecipe(null);
+    setUsage(null);
 
     try {
       const response = await fetch("/api/refine-recipe", {
@@ -47,6 +54,7 @@ const RecipeImportPage = () => {
       const data = await response.json();
       console.log("Recipe data received:", data.recipe);
       setRecipe(data.recipe);
+      setUsage(data.usage);
       setCurrentStep(2); // Move to step 2 after successful import
     } catch (error) {
       console.error(error);
@@ -213,6 +221,36 @@ const RecipeImportPage = () => {
             <h2 className="text-xl font-semibold mb-4">Review Your Recipe</h2>
             <RecipeComponent recipe={recipe} effectiveStartTime={null} />
           </div>
+
+          {usage && (
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <h3 className="text-sm font-medium text-gray-700 mb-2">
+                API Usage Information
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <span className="text-gray-600">Prompt Tokens:</span>
+                  <span className="ml-2 font-medium">{usage.promptTokens}</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Completion Tokens:</span>
+                  <span className="ml-2 font-medium">
+                    {usage.completionTokens}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Total Tokens:</span>
+                  <span className="ml-2 font-medium">{usage.totalTokens}</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Cost:</span>
+                  <span className="ml-2 font-medium">
+                    ${((usage.costInCents ?? 0) / 100).toFixed(4)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-4 sticky bottom-4">
             <button

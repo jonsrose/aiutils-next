@@ -10,6 +10,10 @@ function SpeechToTextPage() {
   const [wordCount, setWordCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [usage, setUsage] = useState<{
+    durationInMinutes?: number;
+    costInCents?: number;
+  } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +31,7 @@ function SpeechToTextPage() {
 
     setIsLoading(true);
     setError(null);
+    setUsage(null);
 
     const formData = new FormData();
     formData.append("audio", file);
@@ -44,6 +49,7 @@ function SpeechToTextPage() {
       const data = await response.json();
       setTranscription(data.transcription);
       setWordCount(data.transcription.split(/\s+/).length);
+      setUsage(data.usage);
       setCurrentStep(2);
     } catch (err) {
       console.error("Error during transcription:", err);
@@ -149,6 +155,32 @@ function SpeechToTextPage() {
               Word count: {wordCount}
             </p>
           </div>
+
+          {usage && (
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+              <h3 className="text-sm font-medium mb-2 dark:text-white">
+                API Usage Information
+              </h3>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Duration:
+                  </span>
+                  <span className="ml-2 font-medium dark:text-white">
+                    {usage.durationInMinutes?.toFixed(2)} minutes
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Cost:
+                  </span>
+                  <span className="ml-2 font-medium dark:text-white">
+                    ${((usage.costInCents ?? 0) / 100).toFixed(4)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-4 sticky bottom-4">
             <button

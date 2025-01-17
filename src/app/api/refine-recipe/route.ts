@@ -1,25 +1,27 @@
 // src/app/api/refine-recipe/route.ts
 
-import { NextResponse } from 'next/server';
-import { Recipe } from '../../../types';
-import { getServerSession } from 'next-auth/next';
+import { NextResponse } from "next/server";
+import { Recipe } from "../../../types";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import OpenAI from 'openai';
-import { getDecryptedApiKey } from '@/utils/cryptoUtils';
+import OpenAI from "openai";
+import { getDecryptedApiKey } from "@/utils/cryptoUtils";
 
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
-      return new NextResponse('Unauthorized', { status: 401 });
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const email = session.user.email;
     const decryptedApiKey = await getDecryptedApiKey(email);
 
     if (!decryptedApiKey) {
-      return new NextResponse('OpenAI API key not found or failed to decrypt', { status: 400 });
+      return new NextResponse("OpenAI API key not found or failed to decrypt", {
+        status: 400,
+      });
     }
 
     const openai = new OpenAI({ apiKey: decryptedApiKey });
@@ -82,28 +84,70 @@ export async function POST(req: Request) {
     // Call OpenAI API
     const response = await openai.chat.completions.create({
       model: model,
-      messages: [{ role: 'user', content: prompt }],
+      messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
     });
 
     const assistantMessage = response.choices[0].message?.content;
 
     if (!assistantMessage) {
-      return NextResponse.json({ error: 'No response from OpenAI' }, { status: 500 });
+      return NextResponse.json(
+        { error: "No response from OpenAI" },
+        { status: 500 }
+      );
+    }
+
+    // Calculate costs based on model
+    const promptTokens = response.usage?.prompt_tokens || 0;
+    const completionTokens = response.usage?.completion_tokens || 0;
+    const totalTokens = response.usage?.total_tokens || 0;
+
+    let costInCents = 0;
+    switch (model) {
+      case "gpt-4":
+        costInCents =
+          ((promptTokens * 0.03 + completionTokens * 0.06) / 1000) * 100;
+        break;
+      case "gpt-4-turbo":
+        costInCents =
+          ((promptTokens * 0.01 + completionTokens * 0.03) / 1000) * 100;
+        break;
+      case "gpt-3.5-turbo":
+        costInCents =
+          ((promptTokens * 0.0005 + completionTokens * 0.0015) / 1000) * 100;
+        break;
+      default:
+        costInCents =
+          ((promptTokens * 0.01 + completionTokens * 0.03) / 1000) * 100;
     }
 
     try {
       const cleanedRecipe: Recipe = JSON.parse(assistantMessage);
-      return NextResponse.json({ 
-        recipe: cleanedRecipe, 
-        redirectUrl: '/recipe-helper'
-      }, { status: 200 });
+      return NextResponse.json(
+        {
+          recipe: cleanedRecipe,
+          redirectUrl: "/recipe-helper",
+          usage: {
+            promptTokens,
+            completionTokens,
+            totalTokens,
+            costInCents: Number(costInCents.toFixed(4)),
+          },
+        },
+        { status: 200 }
+      );
     } catch (error) {
-      console.error('Error parsing JSON:', error);
-      return NextResponse.json({ error: 'Invalid JSON response from OpenAI' }, { status: 500 });
+      console.error("Error parsing JSON:", error);
+      return NextResponse.json(
+        { error: "Invalid JSON response from OpenAI" },
+        { status: 500 }
+      );
     }
   } catch (error) {
-    console.error('Error in refine-recipe API:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Error in refine-recipe API:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
