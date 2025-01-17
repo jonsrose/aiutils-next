@@ -8,9 +8,11 @@ import RecipeComponent from "@/components/RecipeComponent";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { withAuth } from "@/components/withAuth";
+import { useQueryClient } from "@tanstack/react-query";
 
 const RecipeImportPage = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [currentStep, setCurrentStep] = useState(1);
   const [recipeName, setRecipeName] = useState("");
   const [recipeUrl, setRecipeUrl] = useState("");
@@ -67,6 +69,7 @@ const RecipeImportPage = () => {
       });
 
       if (response.ok) {
+        await queryClient.invalidateQueries({ queryKey: ["recipes"] });
         alert("Recipe saved successfully!");
         router.push("/recipe-helper");
       } else {
