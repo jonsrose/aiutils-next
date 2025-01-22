@@ -330,12 +330,7 @@ const RecipeImportPage = () => {
 
       {currentStep === 2 && recipe && (
         <div className="flex flex-col space-y-6 pb-32">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4 dark:text-white">
-              Review Your Recipe
-            </h2>
-            <RecipeComponent recipe={recipe} effectiveStartTime={null} />
-          </div>
+          <RecipeComponent recipe={recipe} effectiveStartTime={null} />
 
           {usage && (
             <div className="text-xs border dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-800/50">
