@@ -99,176 +99,180 @@ export function RecipeDetail({ id }: RecipeDetailProps) {
 
   return (
     <div className="container mx-auto p-4 space-y-8 mb-16">
-      <div className="flex items-center justify-between mb-4">
-        <Link
-          href="/recipe-helper"
-          className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-primary hover:text-primary/80 hover:bg-primary/10 transition-all duration-200"
-        >
-          <ArrowLeft className="h-4 w-4" /> My Recipes
-        </Link>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={copyToClipboard}
-            className="hover:bg-primary/10"
-            title="Copy to Clipboard"
+      <div className="fixed top-16 left-0 right-0 z-40 bg-background/80 backdrop-blur-sm border-b">
+        <div className="container mx-auto p-4 flex items-center justify-between">
+          <Link
+            href="/recipe-helper"
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-primary hover:text-primary/80 hover:bg-primary/10 transition-all duration-200"
           >
-            <ClipboardCopy className="h-4 w-4" />
-          </Button>
-          {isChecklist && (
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Link>
+          <div className="flex gap-2">
             <Button
               variant="outline"
               size="icon"
-              onClick={clearChecklist}
-              disabled={!hasCheckedItems}
+              onClick={copyToClipboard}
               className="hover:bg-primary/10"
-              title="Clear Checklist"
+              title="Copy to Clipboard"
             >
-              <RefreshCw className="h-4 w-4" />
+              <ClipboardCopy className="h-4 w-4" />
             </Button>
-          )}
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setShowSettingsDialog(true)}
-            className="hover:bg-primary/10"
-            title="Settings"
-          >
-            <Settings2 className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="text-destructive hover:text-destructive hover:bg-destructive/10"
-            onClick={() => setShowDeleteDialog(true)}
-            title="Delete Recipe"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      <RecipeComponent
-        recipe={recipe}
-        effectiveStartTime={effectiveStartTime}
-        isChecklist={isChecklist}
-        checkedItems={checkedItems}
-        setCheckedItems={setCheckedItems}
-      />
-
-      <Dialog open={showSettingsDialog} onOpenChange={setShowSettingsDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Recipe Settings</DialogTitle>
-          </DialogHeader>
-
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <h3 className="font-medium">Timing Options</h3>
-              {!startTime && !endTime ? (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <DatePicker
-                      selected={selectedTime}
-                      onChange={(time: Date | null) => setSelectedTime(time)}
-                      showTimeSelect
-                      showTimeSelectOnly
-                      timeIntervals={15}
-                      timeCaption="Time"
-                      dateFormat="h:mm aa"
-                      className="w-full border rounded-md px-3 py-2"
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      className="flex-1"
-                      onClick={() => setStartTime(selectedTime)}
-                    >
-                      Set Start Time
-                    </Button>
-                    <Button
-                      className="flex-1"
-                      onClick={() => setEndTime(selectedTime)}
-                    >
-                      Set End Time
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    {startTime && (
-                      <p className="text-sm">
-                        Starting at:{" "}
-                        <span className="font-medium">
-                          {startTime.toLocaleTimeString()}
-                        </span>
-                      </p>
-                    )}
-                    {endTime && (
-                      <p className="text-sm">
-                        Ending at:{" "}
-                        <span className="font-medium">
-                          {endTime.toLocaleTimeString()}
-                        </span>
-                      </p>
-                    )}
-                  </div>
-                  <Button
-                    variant="destructive"
-                    onClick={() => {
-                      setStartTime(null);
-                      setEndTime(null);
-                    }}
-                  >
-                    Clear Times
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="font-medium">Display Options</h3>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="isChecklist"
-                  checked={isChecklist}
-                  onChange={(e) => setIsChecklist(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300"
-                />
-                <label htmlFor="isChecklist" className="text-sm font-medium">
-                  Show as checklist
-                </label>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Recipe</DialogTitle>
-          </DialogHeader>
-          <p>
-            Are you sure you want to delete &quot;{recipe.name}&quot;? This
-            action cannot be undone.
-          </p>
-          <DialogFooter className="flex gap-2 justify-end">
+            {isChecklist && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={clearChecklist}
+                disabled={!hasCheckedItems}
+                className="hover:bg-primary/10"
+                title="Clear Checklist"
+              >
+                <RefreshCw className="h-4 w-4" />
+              </Button>
+            )}
             <Button
               variant="outline"
-              onClick={() => setShowDeleteDialog(false)}
+              size="icon"
+              onClick={() => setShowSettingsDialog(true)}
+              className="hover:bg-primary/10"
+              title="Settings"
             >
-              Cancel
+              <Settings2 className="h-4 w-4" />
             </Button>
-            <Button variant="destructive" onClick={handleDelete}>
-              Delete
+            <Button
+              variant="outline"
+              size="icon"
+              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              onClick={() => setShowDeleteDialog(true)}
+              title="Delete Recipe"
+            >
+              <Trash2 className="h-4 w-4" />
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </div>
+        </div>
+      </div>
+      <div className="pt-24">
+        <RecipeComponent
+          recipe={recipe}
+          effectiveStartTime={effectiveStartTime}
+          isChecklist={isChecklist}
+          checkedItems={checkedItems}
+          setCheckedItems={setCheckedItems}
+        />
+
+        <Dialog open={showSettingsDialog} onOpenChange={setShowSettingsDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Recipe Settings</DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="font-medium">Timing Options</h3>
+                {!startTime && !endTime ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <DatePicker
+                        selected={selectedTime}
+                        onChange={(time: Date | null) => setSelectedTime(time)}
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={15}
+                        timeCaption="Time"
+                        dateFormat="h:mm aa"
+                        className="w-full border rounded-md px-3 py-2"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        className="flex-1"
+                        onClick={() => setStartTime(selectedTime)}
+                      >
+                        Set Start Time
+                      </Button>
+                      <Button
+                        className="flex-1"
+                        onClick={() => setEndTime(selectedTime)}
+                      >
+                        Set End Time
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="space-y-1">
+                      {startTime && (
+                        <p className="text-sm">
+                          Starting at:{" "}
+                          <span className="font-medium">
+                            {startTime.toLocaleTimeString()}
+                          </span>
+                        </p>
+                      )}
+                      {endTime && (
+                        <p className="text-sm">
+                          Ending at:{" "}
+                          <span className="font-medium">
+                            {endTime.toLocaleTimeString()}
+                          </span>
+                        </p>
+                      )}
+                    </div>
+                    <Button
+                      variant="destructive"
+                      onClick={() => {
+                        setStartTime(null);
+                        setEndTime(null);
+                      }}
+                    >
+                      Clear Times
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="font-medium">Display Options</h3>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="isChecklist"
+                    checked={isChecklist}
+                    onChange={(e) => setIsChecklist(e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  <label htmlFor="isChecklist" className="text-sm font-medium">
+                    Show as checklist
+                  </label>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete Recipe</DialogTitle>
+            </DialogHeader>
+            <p>
+              Are you sure you want to delete &quot;{recipe.name}&quot;? This
+              action cannot be undone.
+            </p>
+            <DialogFooter className="flex gap-2 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => setShowDeleteDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={handleDelete}>
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 }

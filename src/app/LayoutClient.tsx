@@ -31,20 +31,20 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
         id="page-content"
         className="flex-1 flex flex-col transition-[margin] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden"
       >
-        <header className="h-[60px] min-h-[60px] border-b sticky top-0 z-50 isolate backdrop-blur-md bg-white/70 dark:bg-slate-900/70 shadow-sm">
+        <header className="h-16 min-h-16 border-b sticky top-0 z-50 isolate backdrop-blur-md bg-white/70 dark:bg-slate-900/70 shadow-sm">
           <div className="flex items-center justify-between h-full px-4">
             <div className="flex items-center">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-black/10 dark:hover:bg-white/10"
-                  style={{
-                    transform: isOpen ? "rotate(-90deg)" : "rotate(0deg)",
-                  }}
-                >
-                  <Menu className="h-4 w-4" />
-                </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsOpen(!isOpen)}
+                className="transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-black/10 dark:hover:bg-white/10"
+                style={{
+                  transform: isOpen ? "rotate(-90deg)" : "rotate(0deg)",
+                }}
+              >
+                <Menu className="h-4 w-4" />
+              </Button>
               <Link href="/" className="ml-4 font-semibold hover:opacity-80">
                 AI Utils
               </Link>
@@ -85,7 +85,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
               </Button>
               <Button
                 variant="destructive"
-                onClick={() => signOut({ callbackUrl: '/signin' })}
+                onClick={() => signOut({ callbackUrl: "/signin" })}
               >
                 Sign Out
               </Button>
