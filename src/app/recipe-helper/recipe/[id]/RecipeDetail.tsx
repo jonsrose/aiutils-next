@@ -102,9 +102,9 @@ export function RecipeDetail({ id }: RecipeDetailProps) {
       <div className="flex items-center justify-between mb-4">
         <Link
           href="/recipe-helper"
-          className="inline-flex items-center text-primary hover:text-primary/80 transition-colors"
+          className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-primary hover:text-primary/80 hover:bg-primary/10 transition-all duration-200"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" /> Back to Recipe List
+          <ArrowLeft className="h-4 w-4" /> My Recipes
         </Link>
         <div className="flex gap-2">
           <Button
