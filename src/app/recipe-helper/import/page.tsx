@@ -329,60 +329,58 @@ const RecipeImportPage = () => {
       )}
 
       {currentStep === 2 && recipe && (
-        <div className="flex flex-col min-h-[calc(100vh-12rem)]">
-          <div className="flex-1 space-y-6 mb-20">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 overflow-y-auto">
-              <h2 className="text-xl font-semibold mb-4 dark:text-white">
-                Review Your Recipe
-              </h2>
-              <RecipeComponent recipe={recipe} effectiveStartTime={null} />
-            </div>
-
-            {usage && (
-              <div className="text-xs border dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-800/50">
-                <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-2">
-                  API Usage
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div>
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Prompt:
-                    </span>
-                    <span className="ml-1 text-gray-700 dark:text-gray-300">
-                      {usage.promptTokens} tokens
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Completion:
-                    </span>
-                    <span className="ml-1 text-gray-700 dark:text-gray-300">
-                      {usage.completionTokens} tokens
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Total:
-                    </span>
-                    <span className="ml-1 text-gray-700 dark:text-gray-300">
-                      {usage.totalTokens} tokens
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Cost:
-                    </span>
-                    <span className="ml-1 text-gray-700 dark:text-gray-300">
-                      ${((usage.costInCents ?? 0) / 100).toFixed(4)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
+        <div className="flex flex-col space-y-6 pb-32">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold mb-4 dark:text-white">
+              Review Your Recipe
+            </h2>
+            <RecipeComponent recipe={recipe} effectiveStartTime={null} />
           </div>
 
+          {usage && (
+            <div className="text-xs border dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-800/50">
+              <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-2">
+                API Usage
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div>
+                  <span className="text-gray-500 dark:text-gray-400">
+                    Prompt:
+                  </span>
+                  <span className="ml-1 text-gray-700 dark:text-gray-300">
+                    {usage.promptTokens} tokens
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-500 dark:text-gray-400">
+                    Completion:
+                  </span>
+                  <span className="ml-1 text-gray-700 dark:text-gray-300">
+                    {usage.completionTokens} tokens
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-500 dark:text-gray-400">
+                    Total:
+                  </span>
+                  <span className="ml-1 text-gray-700 dark:text-gray-300">
+                    {usage.totalTokens} tokens
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-500 dark:text-gray-400">
+                    Cost:
+                  </span>
+                  <span className="ml-1 text-gray-700 dark:text-gray-300">
+                    ${((usage.costInCents ?? 0) / 100).toFixed(4)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 p-4 border-t dark:border-gray-700">
-            <div className="container mx-auto flex gap-4">
+            <div className="container mx-auto flex gap-4 max-w-[90%]">
               <button
                 onClick={handleBack}
                 className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 flex-1"
