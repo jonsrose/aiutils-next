@@ -41,7 +41,7 @@ async function deleteRecipe(id: string): Promise<void> {
 export function RecipeDetail({ id }: RecipeDetailProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: recipe } = useRecipe(id);
+  const { data: recipe, isLoading } = useRecipe(id);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
@@ -95,6 +95,17 @@ export function RecipeDetail({ id }: RecipeDetailProps) {
       alert("Failed to delete recipe");
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-4 flex items-center justify-center min-h-[60vh]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading recipe...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!recipe) return null;
 
