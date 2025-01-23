@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React, { useState } from "react";
+import Link from "next/link";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -19,26 +19,30 @@ interface Recipe {
 }
 
 async function fetchRecipes(): Promise<Recipe[]> {
-  const response = await fetch('/api/recipes');
+  const response = await fetch("/api/recipes");
   if (!response.ok) {
-    throw new Error('Failed to fetch recipes');
+    throw new Error("Failed to fetch recipes");
   }
   return response.json();
 }
 
 async function deleteRecipe(id: number): Promise<void> {
   const response = await fetch(`/api/recipes/${id}`, {
-    method: 'DELETE',
+    method: "DELETE",
   });
   if (!response.ok) {
-    throw new Error('Failed to delete recipe');
+    throw new Error("Failed to delete recipe");
   }
 }
 
 export function RecipeList() {
   const queryClient = useQueryClient();
-  const { data: recipes, isLoading, error } = useQuery<Recipe[]>({
-    queryKey: ['recipes'],
+  const {
+    data: recipes,
+    isLoading,
+    error,
+  } = useQuery<Recipe[]>({
+    queryKey: ["recipes"],
     queryFn: fetchRecipes,
   });
 
@@ -49,16 +53,23 @@ export function RecipeList() {
 
     try {
       await deleteRecipe(recipeToDelete.id);
-      await queryClient.invalidateQueries({ queryKey: ['recipes'] });
+      await queryClient.invalidateQueries({ queryKey: ["recipes"] });
       setRecipeToDelete(null);
     } catch (error) {
-      console.error('Error deleting recipe:', error);
-      alert('Failed to delete recipe');
+      console.error("Error deleting recipe:", error);
+      alert("Failed to delete recipe");
     }
   };
 
   if (isLoading) {
-    return <div>Loading recipes...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading recipes...</p>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -72,9 +83,12 @@ export function RecipeList() {
       ) : (
         <ul className="space-y-2 min-h-fit">
           {recipes.map((recipe) => (
-            <li key={recipe.id} className="flex items-center justify-between group bg-card hover:bg-accent/50 rounded-lg p-2">
-              <Link 
-                href={`/recipe-helper/recipe/${recipe.id}`} 
+            <li
+              key={recipe.id}
+              className="flex items-center justify-between group bg-card hover:bg-accent/50 rounded-lg p-2"
+            >
+              <Link
+                href={`/recipe-helper/recipe/${recipe.id}`}
                 className="flex-1 text-foreground hover:text-primary transition-colors"
               >
                 {recipe.name}
@@ -95,25 +109,23 @@ export function RecipeList() {
         </ul>
       )}
 
-      <Dialog open={!!recipeToDelete} onOpenChange={() => setRecipeToDelete(null)}>
+      <Dialog
+        open={!!recipeToDelete}
+        onOpenChange={() => setRecipeToDelete(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Recipe</DialogTitle>
           </DialogHeader>
           <p>
-            Are you sure you want to delete &quot;{recipeToDelete?.name}&quot;? This action cannot be undone.
+            Are you sure you want to delete &quot;{recipeToDelete?.name}&quot;?
+            This action cannot be undone.
           </p>
           <DialogFooter className="flex gap-2 justify-end">
-            <Button
-              variant="outline"
-              onClick={() => setRecipeToDelete(null)}
-            >
+            <Button variant="outline" onClick={() => setRecipeToDelete(null)}>
               Cancel
             </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-            >
+            <Button variant="destructive" onClick={handleDelete}>
               Delete
             </Button>
           </DialogFooter>
@@ -121,4 +133,4 @@ export function RecipeList() {
       </Dialog>
     </div>
   );
-} 
+}
