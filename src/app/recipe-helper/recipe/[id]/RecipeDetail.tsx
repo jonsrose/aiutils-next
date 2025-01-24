@@ -196,7 +196,6 @@ export function RecipeDetail({ id }: RecipeDetailProps) {
                         open={isTimePickerOpen}
                         onInputClick={() => setIsTimePickerOpen(true)}
                         onClickOutside={() => setIsTimePickerOpen(false)}
-                        shouldCloseOnEsc
                       />
                     </div>
                     <div className="flex gap-2">

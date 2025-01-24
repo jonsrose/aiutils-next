@@ -131,7 +131,7 @@ const RecipeImportPage = () => {
     try {
       new URL(url);
       return true;
-    } catch (e) {
+    } catch {
       return false;
     }
   };
@@ -139,7 +139,7 @@ const RecipeImportPage = () => {
   // Debounced version of fetchUrlContent
   const debouncedFetchUrl = useCallback(
     debounce((url: string) => fetchUrlContent(url), 500),
-    []
+    [fetchUrlContent]
   );
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
