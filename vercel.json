@@ -1,6 +1,6 @@
 {
   "functions": {
-    "app/api/refine-recipe/route.ts": {
+    "/api/**/*": {
       "maxDuration": 60
     }
   }
