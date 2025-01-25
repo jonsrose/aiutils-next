@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/refine-recipe/*.ts": {
+      "maxDuration": 60
+    }
+  }
+}
