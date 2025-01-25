@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { Recipe } from "@/types";
 import RecipeComponent from "@/components/RecipeComponent";
 import Link from "next/link";
@@ -34,6 +34,42 @@ const RecipeImportPage = () => {
   } | null>(null);
   const [isUrlFetching, setIsUrlFetching] = useState(false);
   const [lastFetchedUrl, setLastFetchedUrl] = useState("");
+
+  const fetchUrlContent = useCallback(
+    async (url: string) => {
+      const isValidUrl = (urlToCheck: string) => {
+        try {
+          new URL(urlToCheck);
+          return true;
+        } catch {
+          return false;
+        }
+      };
+
+      if (!url || url === lastFetchedUrl || !isValidUrl(url)) return;
+
+      setIsUrlFetching(true);
+      try {
+        const response = await fetch("/api/fetch-recipe-url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url }),
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch URL content");
+
+        const data = await response.json();
+        setUrlContent(data);
+        setLastFetchedUrl(url);
+        setShowUrlModal(true);
+      } catch (error) {
+        console.error("Error fetching URL content:", error);
+      } finally {
+        setIsUrlFetching(false);
+      }
+    },
+    [lastFetchedUrl]
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,42 +139,9 @@ const RecipeImportPage = () => {
     setRecipe(null);
   };
 
-  const fetchUrlContent = async (url: string) => {
-    if (!url || url === lastFetchedUrl || !isValidUrl(url)) return;
-
-    setIsUrlFetching(true);
-    try {
-      const response = await fetch("/api/fetch-recipe-url", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
-      });
-
-      if (!response.ok) throw new Error("Failed to fetch URL content");
-
-      const data = await response.json();
-      setUrlContent(data);
-      setLastFetchedUrl(url);
-      setShowUrlModal(true);
-    } catch (error) {
-      console.error("Error fetching URL content:", error);
-    } finally {
-      setIsUrlFetching(false);
-    }
-  };
-
-  const isValidUrl = (url: string) => {
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
   // Debounced version of fetchUrlContent
-  const debouncedFetchUrl = useCallback(
-    debounce((url: string) => fetchUrlContent(url), 500),
+  const debouncedFetchUrl = useMemo(
+    () => debounce((url: string) => fetchUrlContent(url), 500),
     [fetchUrlContent]
   );
 
