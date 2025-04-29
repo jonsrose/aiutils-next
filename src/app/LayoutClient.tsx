@@ -23,6 +23,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [showSignOutModal, setShowSignOutModal] = useState(false);
   const { data: session } = useSession();
+  console.log("session", session);
 
   return (
     <div className="h-screen flex flex-col">
@@ -49,10 +50,10 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
                 AI Utils
               </Link>
             </div>
-            {session?.user?.name && (
+            {session?.user && (
               <DropdownMenu>
                 <DropdownMenuTrigger className="text-sm font-medium hover:opacity-80">
-                  {session.user.name}
+                  {session.user.name || session.user.email}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
