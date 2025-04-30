@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { healthCheck } from "@/db/schema";
 import { initializeDatabase } from "@/db/init";
+import { eq } from "drizzle-orm";
 
 // Initialize on server start
 initializeDatabase();
@@ -8,7 +9,10 @@ initializeDatabase();
 export async function GET() {
   try {
     // Update the last_ping timestamp
-    await db.update(healthCheck).set({ lastPing: new Date() }).where({ id: 1 });
+    await db
+      .update(healthCheck)
+      .set({ lastPing: new Date() })
+      .where(eq(healthCheck.id, 1));
 
     return new Response("OK", { status: 200 });
   } catch (error) {
