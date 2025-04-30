@@ -2,6 +2,7 @@ name: Database Keep-Alive
 on:
   schedule:
     - cron: '0 */12 * * *'  # Runs every 12 hours
+  workflow_dispatch:  # Add this to enable manual triggers
 
 jobs:
   ping:
@@ -9,4 +10,4 @@ jobs:
     steps:
       - name: Ping Application
         run: |
-          curl -X GET https://www-dev.aiutils.site/api/healthcheck
+          curl -X GET https://www.aiutils.site/api/healthcheck
