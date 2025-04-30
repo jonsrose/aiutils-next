@@ -1,0 +1,12 @@
+name: Database Keep-Alive
+on:
+  schedule:
+    - cron: '0 */12 * * *'  # Runs every 12 hours
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Application
+        run: |
+          curl -X GET https://www-dev.aiutils.site/api/healthcheck

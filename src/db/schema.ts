@@ -7,10 +7,10 @@ import {
   integer,
   jsonb,
   serial,
-} from "drizzle-orm/pg-core"
+} from "drizzle-orm/pg-core";
 
-import type { AdapterAccount } from "next-auth/adapters"
- 
+import type { AdapterAccount } from "next-auth/adapters";
+
 export const users = pgTable("user", {
   id: text("id")
     .primaryKey()
@@ -20,8 +20,8 @@ export const users = pgTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
   openaiApiKey: text("openaiApiKey"),
-})
- 
+});
+
 export const accounts = pgTable(
   "account",
   {
@@ -44,16 +44,16 @@ export const accounts = pgTable(
       columns: [account.provider, account.providerAccountId],
     }),
   })
-)
- 
+);
+
 export const sessions = pgTable("session", {
   sessionToken: text("sessionToken").primaryKey(),
   userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
-})
- 
+});
+
 export const verificationTokens = pgTable(
   "verificationToken",
   {
@@ -66,8 +66,8 @@ export const verificationTokens = pgTable(
       columns: [verificationToken.identifier, verificationToken.token],
     }),
   })
-)
- 
+);
+
 export const authenticators = pgTable(
   "authenticator",
   {
@@ -87,7 +87,7 @@ export const authenticators = pgTable(
       columns: [authenticator.userId, authenticator.credentialID],
     }),
   })
-)
+);
 
 export const userRecipes = pgTable("user_recipe", {
   id: serial("id").primaryKey(),
@@ -96,4 +96,9 @@ export const userRecipes = pgTable("user_recipe", {
     .references(() => users.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   content: jsonb("content").notNull(),
+});
+
+export const healthCheck = pgTable("health_check", {
+  id: serial("id").primaryKey(),
+  lastPing: timestamp("last_ping", { withTimezone: true }).defaultNow(),
 });
