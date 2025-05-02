@@ -2,7 +2,7 @@ export const runtime = "nodejs";
 
 import { db } from "@/db";
 import { healthCheck } from "@/db/schema";
-import { initializeDatabase } from "@/db/init";
+// import { initializeDatabase } from "@/db/init";
 import { eq } from "drizzle-orm";
 
 export async function GET() {
@@ -10,7 +10,7 @@ export async function GET() {
 
   try {
     // Move initialization inside the handler
-    await initializeDatabase();
+    // await initializeDatabase();
 
     console.log("Attempting database update...");
     const now = new Date();
