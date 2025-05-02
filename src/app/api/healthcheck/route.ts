@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { db } from "@/db";
 import { healthCheck } from "@/db/schema";
 import { initializeDatabase } from "@/db/init";
