@@ -3,15 +3,14 @@ import { healthCheck } from "@/db/schema";
 import { initializeDatabase } from "@/db/init";
 import { eq } from "drizzle-orm";
 
-// Initialize on server start
-initializeDatabase();
-
 export async function GET() {
-  console.log("Health check route called");
+  console.log("=== HEALTH CHECK ROUTE START ===");
 
   try {
-    // Update the last_ping timestamp
+    // Move initialization inside the handler
+    await initializeDatabase();
 
+    console.log("Attempting database update...");
     const now = new Date();
 
     await db
@@ -19,11 +18,10 @@ export async function GET() {
       .set({ lastPing: now })
       .where(eq(healthCheck.id, 1));
 
-    console.log("Health check updated to ", now);
-
+    console.log("=== HEALTH CHECK SUCCESS ===", now);
     return new Response("OK", { status: 200 });
   } catch (error) {
-    console.error("Health check error:", error);
+    console.error("=== HEALTH CHECK ERROR ===", error);
     return new Response("Error", { status: 500 });
   }
 }
