@@ -21,7 +21,15 @@ export async function GET() {
       .where(eq(healthCheck.id, 1));
 
     console.log("=== HEALTH CHECK SUCCESS ===", now);
-    return new Response("OK", { status: 200 });
+    return new Response("OK", {
+      status: 200,
+      headers: {
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    });
   } catch (error) {
     console.error("=== HEALTH CHECK ERROR ===", error);
     return new Response("Error", { status: 500 });
