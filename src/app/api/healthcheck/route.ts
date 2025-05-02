@@ -7,10 +7,10 @@ import { eq } from "drizzle-orm";
 initializeDatabase();
 
 export async function GET() {
+  console.log("Health check route called");
+
   try {
     // Update the last_ping timestamp
-
-    console.log("Updating health check");
 
     const now = new Date();
 
