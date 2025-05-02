@@ -1,4 +1,6 @@
 export const runtime = "nodejs";
+export const maxDuration = 10; // ensures function doesn't timeout too quickly
+export const dynamic = "force-dynamic"; // prevents caching at the edge
 
 import { db } from "@/db";
 import { healthCheck } from "@/db/schema";
