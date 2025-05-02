@@ -6,6 +6,8 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET() {
+  console.log("Getting recipes");
+
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
