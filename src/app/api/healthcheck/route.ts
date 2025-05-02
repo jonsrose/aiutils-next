@@ -9,10 +9,17 @@ initializeDatabase();
 export async function GET() {
   try {
     // Update the last_ping timestamp
+
+    console.log("Updating health check");
+
+    const now = new Date();
+
     await db
       .update(healthCheck)
-      .set({ lastPing: new Date() })
+      .set({ lastPing: now })
       .where(eq(healthCheck.id, 1));
+
+    console.log("Health check updated to ", now);
 
     return new Response("OK", { status: 200 });
   } catch (error) {
